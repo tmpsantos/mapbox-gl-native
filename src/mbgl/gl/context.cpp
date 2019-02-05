@@ -8,6 +8,7 @@
 #include <mbgl/util/logging.hpp>
 
 #include <cstring>
+#include <mutex>
 
 namespace mbgl {
 namespace gl {
@@ -23,22 +24,9 @@ static_assert(underlying_type(DataType::Integer) == GL_INT, "OpenGL type mismatc
 static_assert(underlying_type(DataType::UnsignedInteger) == GL_UNSIGNED_INT, "OpenGL type mismatch");
 static_assert(underlying_type(DataType::Float) == GL_FLOAT, "OpenGL type mismatch");
 
-#if not MBGL_USE_GLES2
-static_assert(underlying_type(RenderbufferType::RGBA) == GL_RGBA8, "OpenGL type mismatch");
-#else
 static_assert(underlying_type(RenderbufferType::RGBA) == GL_RGBA8_OES, "OpenGL type mismatch");
-#endif // MBGL_USE_GLES2
-#if not MBGL_USE_GLES2
-static_assert(underlying_type(RenderbufferType::DepthStencil) == GL_DEPTH24_STENCIL8, "OpenGL type mismatch");
-#else
 static_assert(underlying_type(RenderbufferType::DepthStencil) == GL_DEPTH24_STENCIL8_OES, "OpenGL type mismatch");
-#endif // MBGL_USE_GLES2
-#if not MBGL_USE_GLES2
-static_assert(underlying_type(RenderbufferType::DepthComponent) == GL_DEPTH_COMPONENT, "OpenGL type mismatch");
-#else
 static_assert(underlying_type(RenderbufferType::DepthComponent) == GL_DEPTH_COMPONENT16, "OpenGL type mismatch");
-#endif // MBGL_USE_GLES2
-
 
 static_assert(underlying_type(PrimitiveType::Points) == GL_POINTS, "OpenGL type mismatch");
 static_assert(underlying_type(PrimitiveType::Lines) == GL_LINES, "OpenGL type mismatch");
@@ -63,10 +51,11 @@ static_assert(underlying_type(TextureFormat::Alpha) == GL_ALPHA, "OpenGL type mi
 static_assert(std::is_same<std::underlying_type_t<TextureType>, GLenum>::value, "OpenGL type mismatch");
 static_assert(underlying_type(TextureType::UnsignedByte) == GL_UNSIGNED_BYTE, "OpenGL type mismatch");
 
-#if MBGL_USE_GLES2 && GL_HALF_FLOAT_OES
+#if GL_HALF_FLOAT_OES
 static_assert(underlying_type(TextureType::HalfFloat) == GL_HALF_FLOAT_OES, "OpenGL type mismatch");
 #endif
-#if !MBGL_USE_GLES2 && GL_HALF_FLOAT_ARB
+
+#if GL_HALF_FLOAT_ARB
 static_assert(underlying_type(TextureType::HalfFloat) == GL_HALF_FLOAT_ARB, "OpenGL type mismatch");
 #endif
 
@@ -94,12 +83,19 @@ static_assert(underlying_type(BufferUsage::DynamicDraw) == GL_DYNAMIC_DRAW, "Ope
 
 static_assert(std::is_same<BinaryProgramFormat, GLenum>::value, "OpenGL type mismatch");
 
-Context::Context()
-    : maximumVertexBindingCount([] {
-          GLint value;
-          MBGL_CHECK_ERROR(glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &value));
-          return value;
-      }()) {
+namespace {
+
+std::once_flag once;
+
+}
+
+Context::Context() {
+    GLint value;
+
+    std::call_once(once, gl::glLoader);
+
+    getGLFunctionPointers().glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &value);
+    maximumVertexBindingCount = value;
 }
 
 Context::~Context() {
@@ -110,7 +106,7 @@ Context::~Context() {
 
 void Context::initializeExtensions(const std::function<gl::ProcAddress(const char*)>& getProcAddress) {
     if (const auto* extensions =
-            reinterpret_cast<const char*>(MBGL_CHECK_ERROR(glGetString(GL_EXTENSIONS)))) {
+            reinterpret_cast<const char*>(getGLFunctionPointers().glGetString(GL_EXTENSIONS))) {
 
         auto fn = [&](
             std::initializer_list<std::pair<const char*, const char*>> probes) -> ProcAddress {
@@ -125,7 +121,7 @@ void Context::initializeExtensions(const std::function<gl::ProcAddress(const cha
         };
 
         static const std::string renderer = []() {
-            std::string r = reinterpret_cast<const char*>(MBGL_CHECK_ERROR(glGetString(GL_RENDERER)));
+            std::string r = reinterpret_cast<const char*>(getGLFunctionPointers().glGetString(GL_RENDERER));
             Log::Info(Event::General, "GPU Identifier: %s", r.c_str());
             return r;
         }();
@@ -153,13 +149,9 @@ void Context::initializeExtensions(const std::function<gl::ProcAddress(const cha
         programBinary = std::make_unique<extension::ProgramBinary>(fn);
 #endif
 
-#if MBGL_USE_GLES2
         constexpr const char* halfFloatExtensionName = "OES_texture_half_float";
         constexpr const char* halfFloatColorBufferExtensionName = "EXT_color_buffer_half_float";
-#else
-        constexpr const char* halfFloatExtensionName = "ARB_half_float_pixel";
-        constexpr const char* halfFloatColorBufferExtensionName = "ARB_color_buffer_float";
-#endif
+
         if (strstr(extensions, halfFloatExtensionName) != nullptr &&
             strstr(extensions, halfFloatColorBufferExtensionName) != nullptr) {
 
@@ -178,35 +170,35 @@ void Context::enableDebugging() {
     }
 
     // This will enable all messages including performance hints
-    // MBGL_CHECK_ERROR(debugging->debugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE));
+    // debugging->debugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
     // This will only enable high and medium severity messages
-    MBGL_CHECK_ERROR(debugging->debugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, nullptr, GL_TRUE));
-    MBGL_CHECK_ERROR(debugging->debugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, nullptr, GL_TRUE));
-    MBGL_CHECK_ERROR(debugging->debugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE));
+    debugging->debugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH, 0, nullptr, GL_TRUE);
+    debugging->debugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, nullptr, GL_TRUE);
+    debugging->debugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 
-    MBGL_CHECK_ERROR(debugging->debugMessageCallback(extension::Debugging::DebugCallback, nullptr));
+    debugging->debugMessageCallback(extension::Debugging::DebugCallback, nullptr);
 }
 
 UniqueShader Context::createShader(ShaderType type, const std::string& source) {
-    UniqueShader result { MBGL_CHECK_ERROR(glCreateShader(static_cast<GLenum>(type))), { this } };
+    UniqueShader result { getGLFunctionPointers().glCreateShader(static_cast<GLenum>(type)), { this } };
 
     const GLchar* sources = source.data();
     const auto lengths = static_cast<GLsizei>(source.length());
-    MBGL_CHECK_ERROR(glShaderSource(result, 1, &sources, &lengths));
-    MBGL_CHECK_ERROR(glCompileShader(result));
+    getGLFunctionPointers().glShaderSource(result, 1, &sources, &lengths);
+    getGLFunctionPointers().glCompileShader(result);
 
     GLint status = 0;
-    MBGL_CHECK_ERROR(glGetShaderiv(result, GL_COMPILE_STATUS, &status));
+    getGLFunctionPointers().glGetShaderiv(result, GL_COMPILE_STATUS, &status);
     if (status != 0) {
         return result;
     }
 
     GLint logLength;
-    MBGL_CHECK_ERROR(glGetShaderiv(result, GL_INFO_LOG_LENGTH, &logLength));
+    getGLFunctionPointers().glGetShaderiv(result, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0) {
         const auto log = std::make_unique<GLchar[]>(logLength);
-        MBGL_CHECK_ERROR(glGetShaderInfoLog(result, logLength, &logLength, log.get()));
+        getGLFunctionPointers().glGetShaderInfoLog(result, logLength, &logLength, log.get());
         Log::Error(Event::Shader, "Shader failed to compile: %s", log.get());
     }
 
@@ -214,10 +206,10 @@ UniqueShader Context::createShader(ShaderType type, const std::string& source) {
 }
 
 UniqueProgram Context::createProgram(ShaderID vertexShader, ShaderID fragmentShader) {
-    UniqueProgram result { MBGL_CHECK_ERROR(glCreateProgram()), { this } };
+    UniqueProgram result { getGLFunctionPointers().glCreateProgram(), { this } };
 
-    MBGL_CHECK_ERROR(glAttachShader(result, vertexShader));
-    MBGL_CHECK_ERROR(glAttachShader(result, fragmentShader));
+    getGLFunctionPointers().glAttachShader(result, vertexShader);
+    getGLFunctionPointers().glAttachShader(result, fragmentShader);
 
     return result;
 }
@@ -226,10 +218,10 @@ UniqueProgram Context::createProgram(ShaderID vertexShader, ShaderID fragmentSha
 UniqueProgram Context::createProgram(BinaryProgramFormat binaryFormat,
                                      const std::string& binaryProgram) {
     assert(supportsProgramBinaries());
-    UniqueProgram result{ MBGL_CHECK_ERROR(glCreateProgram()), { this } };
-    MBGL_CHECK_ERROR(programBinary->programBinary(result, static_cast<GLenum>(binaryFormat),
-                                                  binaryProgram.data(),
-                                                  static_cast<GLint>(binaryProgram.size())));
+    UniqueProgram result{ getGLFunctionPointers().glCreateProgram(), { this } };
+    programBinary->programBinary(result, static_cast<GLenum>(binaryFormat),
+                                 binaryProgram.data(),
+                                 static_cast<GLint>(binaryProgram.size()));
     verifyProgramLinkage(result);
     return result;
 }
@@ -240,22 +232,22 @@ UniqueProgram Context::createProgram(BinaryProgramFormat, const std::string&) {
 #endif
 
 void Context::linkProgram(ProgramID program_) {
-    MBGL_CHECK_ERROR(glLinkProgram(program_));
+    getGLFunctionPointers().glLinkProgram(program_);
     verifyProgramLinkage(program_);
 }
 
 void Context::verifyProgramLinkage(ProgramID program_) {
     GLint status;
-    MBGL_CHECK_ERROR(glGetProgramiv(program_, GL_LINK_STATUS, &status));
+    getGLFunctionPointers().glGetProgramiv(program_, GL_LINK_STATUS, &status);
     if (status == GL_TRUE) {
         return;
     }
 
     GLint logLength;
-    MBGL_CHECK_ERROR(glGetProgramiv(program_, GL_INFO_LOG_LENGTH, &logLength));
+    getGLFunctionPointers().glGetProgramiv(program_, GL_INFO_LOG_LENGTH, &logLength);
     const auto log = std::make_unique<GLchar[]>(logLength);
     if (logLength > 0) {
-        MBGL_CHECK_ERROR(glGetProgramInfoLog(program_, logLength, &logLength, log.get()));
+        getGLFunctionPointers().glGetProgramInfoLog(program_, logLength, &logLength, log.get());
         Log::Error(Event::Shader, "Program failed to link: %s", log.get());
     }
 
@@ -264,25 +256,25 @@ void Context::verifyProgramLinkage(ProgramID program_) {
 
 UniqueBuffer Context::createVertexBuffer(const void* data, std::size_t size, const BufferUsage usage) {
     BufferID id = 0;
-    MBGL_CHECK_ERROR(glGenBuffers(1, &id));
+    getGLFunctionPointers().glGenBuffers(1, &id);
     UniqueBuffer result { std::move(id), { this } };
     vertexBuffer = result;
-    MBGL_CHECK_ERROR(glBufferData(GL_ARRAY_BUFFER, size, data, static_cast<GLenum>(usage)));
+    getGLFunctionPointers().glBufferData(GL_ARRAY_BUFFER, size, data, static_cast<GLenum>(usage));
     return result;
 }
 
 void Context::updateVertexBuffer(UniqueBuffer& buffer, const void* data, std::size_t size) {
     vertexBuffer = buffer;
-    MBGL_CHECK_ERROR(glBufferSubData(GL_ARRAY_BUFFER, 0, size, data));
+    getGLFunctionPointers().glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
 UniqueBuffer Context::createIndexBuffer(const void* data, std::size_t size, const BufferUsage usage) {
     BufferID id = 0;
-    MBGL_CHECK_ERROR(glGenBuffers(1, &id));
+    getGLFunctionPointers().glGenBuffers(1, &id);
     UniqueBuffer result { std::move(id), { this } };
     bindVertexArray = 0;
     globalVertexArrayState.indexBuffer = result;
-    MBGL_CHECK_ERROR(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, static_cast<GLenum>(usage)));
+    getGLFunctionPointers().glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, static_cast<GLenum>(usage));
     return result;
 }
 
@@ -291,14 +283,14 @@ void Context::updateIndexBuffer(UniqueBuffer& buffer, const void* data, std::siz
     // so that we don't mess up another VAO
     bindVertexArray = 0;
     globalVertexArrayState.indexBuffer = buffer;
-    MBGL_CHECK_ERROR(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data));
+    getGLFunctionPointers().glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
 }
 
 
 UniqueTexture Context::createTexture() {
     if (pooledTextures.empty()) {
         pooledTextures.resize(TextureMax);
-        MBGL_CHECK_ERROR(glGenTextures(TextureMax, pooledTextures.data()));
+        getGLFunctionPointers().glGenTextures(TextureMax, pooledTextures.data());
     }
 
     TextureID id = pooledTextures.back();
@@ -324,7 +316,7 @@ bool Context::supportsProgramBinaries() const {
     // https://chromium.googlesource.com/chromium/src/gpu/+/master/config/gpu_driver_bug_list.json#2316
     // Blacklist Vivante GC4000 due to bugs when linking loaded programs:
     // https://github.com/mapbox/mapbox-gl-native/issues/10704
-    const std::string renderer = reinterpret_cast<const char*>(MBGL_CHECK_ERROR(glGetString(GL_RENDERER)));
+    const std::string renderer = reinterpret_cast<const char*>(getGLFunctionPointers().glGetString(GL_RENDERER));
     if (renderer.find("Adreno (TM) 3") != std::string::npos
      || renderer.find("Adreno (TM) 4") != std::string::npos
      || renderer.find("Adreno (TM) 5") != std::string::npos
@@ -341,12 +333,12 @@ Context::getBinaryProgram(ProgramID program_) const {
         return {};
     }
     GLint binaryLength;
-    MBGL_CHECK_ERROR(glGetProgramiv(program_, GL_PROGRAM_BINARY_LENGTH, &binaryLength));
+    getGLFunctionPointers().glGetProgramiv(program_, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
     std::string binary;
     binary.resize(binaryLength);
     GLenum binaryFormat;
-    MBGL_CHECK_ERROR(programBinary->getProgramBinary(
-        program_, binaryLength, &binaryLength, &binaryFormat, const_cast<char*>(binary.data())));
+    programBinary->getProgramBinary(
+        program_, binaryLength, &binaryLength, &binaryFormat, const_cast<char*>(binary.data()));
     if (size_t(binaryLength) != binary.size()) {
         return {};
     }
@@ -361,7 +353,7 @@ optional<std::pair<BinaryProgramFormat, std::string>> Context::getBinaryProgram(
 VertexArray Context::createVertexArray() {
     if (supportsVertexArrays()) {
         VertexArrayID id = 0;
-        MBGL_CHECK_ERROR(vertexArray->genVertexArrays(1, &id));
+        vertexArray->genVertexArrays(1, &id);
         UniqueVertexArray vao(std::move(id), { this });
         return { UniqueVertexArrayState(new VertexArrayState(std::move(vao)), VertexArrayStateDeleter { true })};
     } else {
@@ -373,18 +365,18 @@ VertexArray Context::createVertexArray() {
 
 UniqueFramebuffer Context::createFramebuffer() {
     FramebufferID id = 0;
-    MBGL_CHECK_ERROR(glGenFramebuffers(1, &id));
+    getGLFunctionPointers().glGenFramebuffers(1, &id);
     return UniqueFramebuffer{ std::move(id), { this } };
 }
 
 UniqueRenderbuffer Context::createRenderbuffer(const RenderbufferType type, const Size size) {
     RenderbufferID id = 0;
-    MBGL_CHECK_ERROR(glGenRenderbuffers(1, &id));
+    getGLFunctionPointers().glGenRenderbuffers(1, &id);
     UniqueRenderbuffer renderbuffer{ std::move(id), { this } };
 
     bindRenderbuffer = renderbuffer;
-    MBGL_CHECK_ERROR(
-        glRenderbufferStorage(GL_RENDERBUFFER, static_cast<GLenum>(type), size.width, size.height));
+    getGLFunctionPointers().
+        glRenderbufferStorage(GL_RENDERBUFFER, static_cast<GLenum>(type), size.width, size.height);
     bindRenderbuffer = 0;
     return renderbuffer;
 }
@@ -397,8 +389,8 @@ std::unique_ptr<uint8_t[]> Context::readFramebuffer(const Size size, const Textu
     // tightly packed into the buffer to avoid buffer overruns.
     pixelStorePack = { 1 };
 
-    MBGL_CHECK_ERROR(glReadPixels(0, 0, size.width, size.height, static_cast<GLenum>(format),
-                                  GL_UNSIGNED_BYTE, data.get()));
+    getGLFunctionPointers().glReadPixels(0, 0, size.width, size.height, static_cast<GLenum>(format),
+                                  GL_UNSIGNED_BYTE, data.get());
 
     if (flip) {
         auto tmp = std::make_unique<uint8_t[]>(stride);
@@ -413,21 +405,10 @@ std::unique_ptr<uint8_t[]> Context::readFramebuffer(const Size size, const Textu
     return data;
 }
 
-#if not MBGL_USE_GLES2
-void Context::drawPixels(const Size size, const void* data, TextureFormat format) {
-    pixelStoreUnpack = { 1 };
-    if (format != TextureFormat::RGBA) {
-        format = static_cast<TextureFormat>(GL_LUMINANCE);
-    }
-    MBGL_CHECK_ERROR(glDrawPixels(size.width, size.height, static_cast<GLenum>(format),
-                                  GL_UNSIGNED_BYTE, data));
-}
-#endif // MBGL_USE_GLES2
-
 namespace {
 
 void checkFramebuffer() {
-    GLenum status = MBGL_CHECK_ERROR(glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    GLenum status = getGLFunctionPointers().glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         switch (status) {
         case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
@@ -458,13 +439,13 @@ void checkFramebuffer() {
 void bindDepthStencilRenderbuffer(
     const Renderbuffer<RenderbufferType::DepthStencil>& depthStencil) {
 #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-    MBGL_CHECK_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                               GL_RENDERBUFFER, depthStencil.renderbuffer));
+    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                               GL_RENDERBUFFER, depthStencil.renderbuffer);
 #else
-    MBGL_CHECK_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
-                                               depthStencil.renderbuffer));
-    MBGL_CHECK_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                               GL_RENDERBUFFER, depthStencil.renderbuffer));
+    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
+                                               depthStencil.renderbuffer);
+    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                               GL_RENDERBUFFER, depthStencil.renderbuffer);
 #endif
 }
 
@@ -478,8 +459,8 @@ Context::createFramebuffer(const Renderbuffer<RenderbufferType::RGBA>& color,
     }
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    MBGL_CHECK_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                               GL_RENDERBUFFER, color.renderbuffer));
+    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                               GL_RENDERBUFFER, color.renderbuffer);
     bindDepthStencilRenderbuffer(depthStencil);
     checkFramebuffer();
     return { color.size, std::move(fbo) };
@@ -488,8 +469,8 @@ Context::createFramebuffer(const Renderbuffer<RenderbufferType::RGBA>& color,
 Framebuffer Context::createFramebuffer(const Renderbuffer<RenderbufferType::RGBA>& color) {
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    MBGL_CHECK_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                               GL_RENDERBUFFER, color.renderbuffer));
+    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                               GL_RENDERBUFFER, color.renderbuffer);
     checkFramebuffer();
     return { color.size, std::move(fbo) };
 }
@@ -502,8 +483,8 @@ Context::createFramebuffer(const Texture& color,
     }
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    MBGL_CHECK_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                                            color.texture, 0));
+    getGLFunctionPointers().glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                                            color.texture, 0);
     bindDepthStencilRenderbuffer(depthStencil);
     checkFramebuffer();
     return { color.size, std::move(fbo) };
@@ -512,8 +493,8 @@ Context::createFramebuffer(const Texture& color,
 Framebuffer Context::createFramebuffer(const Texture& color) {
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    MBGL_CHECK_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                                            color.texture, 0));
+    getGLFunctionPointers().glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                                            color.texture, 0);
     checkFramebuffer();
     return { color.size, std::move(fbo) };
 }
@@ -526,8 +507,8 @@ Context::createFramebuffer(const Texture& color,
     }
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    MBGL_CHECK_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color.texture, 0));
-    MBGL_CHECK_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthTarget.renderbuffer));
+    getGLFunctionPointers().glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color.texture, 0);
+    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthTarget.renderbuffer);
     checkFramebuffer();
     return { depthTarget.size, std::move(fbo) };
 }
@@ -539,10 +520,10 @@ Context::createTexture(const Size size, const void* data, TextureFormat format, 
     updateTexture(obj, size, data, format, unit, type);
     // We are using clamp to edge here since OpenGL ES doesn't allow GL_REPEAT on NPOT textures.
     // We use those when the pixelRatio isn't a power of two, e.g. on iPhone 6 Plus.
-    MBGL_CHECK_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-    MBGL_CHECK_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-    MBGL_CHECK_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-    MBGL_CHECK_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    getGLFunctionPointers().glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    getGLFunctionPointers().glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    getGLFunctionPointers().glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    getGLFunctionPointers().glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     return obj;
 }
 
@@ -550,9 +531,9 @@ void Context::updateTexture(
     TextureID id, const Size size, const void* data, TextureFormat format, TextureUnit unit, TextureType type) {
     activeTextureUnit = unit;
     texture[unit] = id;
-    MBGL_CHECK_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLenum>(format), size.width,
+    getGLFunctionPointers().glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLenum>(format), size.width,
                                   size.height, 0, static_cast<GLenum>(format), static_cast<GLenum>(type),
-                                  data));
+                                  data);
 }
 
 void Context::bindTexture(Texture& obj,
@@ -566,28 +547,28 @@ void Context::bindTexture(Texture& obj,
         texture[unit] = obj.texture;
 
         if (filter != obj.filter || mipmap != obj.mipmap) {
-            MBGL_CHECK_ERROR(glTexParameteri(
+            getGLFunctionPointers().glTexParameteri(
                 GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                 filter == TextureFilter::Linear
                     ? (mipmap == TextureMipMap::Yes ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR)
-                    : (mipmap == TextureMipMap::Yes ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST)));
-            MBGL_CHECK_ERROR(
+                    : (mipmap == TextureMipMap::Yes ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST));
+            getGLFunctionPointers().
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                                filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
+                                filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST);
             obj.filter = filter;
             obj.mipmap = mipmap;
         }
         if (wrapX != obj.wrapX) {
 
-            MBGL_CHECK_ERROR(
+            getGLFunctionPointers().
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-                                wrapX == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT));
+                                wrapX == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
             obj.wrapX = wrapX;
         }
         if (wrapY != obj.wrapY) {
-            MBGL_CHECK_ERROR(
+            getGLFunctionPointers().
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                                wrapY == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT));
+                                wrapY == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
             obj.wrapY = wrapY;
         }
     } else if (texture[unit] != obj.texture) {
@@ -631,13 +612,6 @@ void Context::setDirtyState() {
     activeTextureUnit.setDirty();
     pixelStorePack.setDirty();
     pixelStoreUnpack.setDirty();
-#if not MBGL_USE_GLES2
-    pointSize.setDirty();
-    pixelZoom.setDirty();
-    rasterPos.setDirty();
-    pixelTransferDepth.setDirty();
-    pixelTransferStencil.setDirty();
-#endif // MBGL_USE_GLES2
     for (auto& tex : texture) {
        tex.setDirty();
     }
@@ -669,7 +643,7 @@ void Context::clear(optional<mbgl::Color> color,
         stencilMask = value::StencilMask::Default;
     }
 
-    MBGL_CHECK_ERROR(glClear(mask));
+    getGLFunctionPointers().glClear(mask);
 }
 
 void Context::setCullFaceMode(const CullFaceMode& mode) {
@@ -682,14 +656,8 @@ void Context::setCullFaceMode(const CullFaceMode& mode) {
     frontFace = mode.frontFace;
 }
 
-#if not MBGL_USE_GLES2
-void Context::setDrawMode(const Points& points) {
-    pointSize = points.pointSize;
-}
-#else
 void Context::setDrawMode(const Points&) {
 }
-#endif // MBGL_USE_GLES2
 
 void Context::setDrawMode(const Lines& lines) {
     lineWidth = lines.lineWidth;
@@ -754,11 +722,11 @@ void Context::setColorMode(const ColorMode& color) {
 void Context::draw(PrimitiveType primitiveType,
                    std::size_t indexOffset,
                    std::size_t indexLength) {
-    MBGL_CHECK_ERROR(glDrawElements(
+    getGLFunctionPointers().glDrawElements(
         static_cast<GLenum>(primitiveType),
         static_cast<GLsizei>(indexLength),
         GL_UNSIGNED_SHORT,
-        reinterpret_cast<GLvoid*>(sizeof(uint16_t) * indexOffset)));
+        reinterpret_cast<GLvoid*>(sizeof(uint16_t) * indexOffset));
 }
 
 void Context::performCleanup() {
@@ -766,12 +734,12 @@ void Context::performCleanup() {
         if (program == id) {
             program.setDirty();
         }
-        MBGL_CHECK_ERROR(glDeleteProgram(id));
+        getGLFunctionPointers().glDeleteProgram(id);
     }
     abandonedPrograms.clear();
 
     for (auto id : abandonedShaders) {
-        MBGL_CHECK_ERROR(glDeleteShader(id));
+        getGLFunctionPointers().glDeleteShader(id);
     }
     abandonedShaders.clear();
 
@@ -783,7 +751,7 @@ void Context::performCleanup() {
                 globalVertexArrayState.indexBuffer.setDirty();
             }
         }
-        MBGL_CHECK_ERROR(glDeleteBuffers(int(abandonedBuffers.size()), abandonedBuffers.data()));
+        getGLFunctionPointers().glDeleteBuffers(int(abandonedBuffers.size()), abandonedBuffers.data());
         abandonedBuffers.clear();
     }
 
@@ -795,7 +763,7 @@ void Context::performCleanup() {
                 }
             }
         }
-        MBGL_CHECK_ERROR(glDeleteTextures(int(abandonedTextures.size()), abandonedTextures.data()));
+        getGLFunctionPointers().glDeleteTextures(int(abandonedTextures.size()), abandonedTextures.data());
         abandonedTextures.clear();
     }
 
@@ -806,8 +774,7 @@ void Context::performCleanup() {
                 bindVertexArray.setDirty();
             }
         }
-        MBGL_CHECK_ERROR(vertexArray->deleteVertexArrays(int(abandonedVertexArrays.size()),
-                                                         abandonedVertexArrays.data()));
+        vertexArray->deleteVertexArrays(int(abandonedVertexArrays.size()), abandonedVertexArrays.data());
         abandonedVertexArrays.clear();
     }
 
@@ -817,14 +784,14 @@ void Context::performCleanup() {
                 bindFramebuffer.setDirty();
             }
         }
-        MBGL_CHECK_ERROR(
-            glDeleteFramebuffers(int(abandonedFramebuffers.size()), abandonedFramebuffers.data()));
+        getGLFunctionPointers().
+            glDeleteFramebuffers(int(abandonedFramebuffers.size()), abandonedFramebuffers.data());
         abandonedFramebuffers.clear();
     }
 
     if (!abandonedRenderbuffers.empty()) {
-        MBGL_CHECK_ERROR(glDeleteRenderbuffers(int(abandonedRenderbuffers.size()),
-                                               abandonedRenderbuffers.data()));
+        getGLFunctionPointers().glDeleteRenderbuffers(int(abandonedRenderbuffers.size()),
+                                               abandonedRenderbuffers.data());
         abandonedRenderbuffers.clear();
     }
 }

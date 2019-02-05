@@ -1,24 +1,29 @@
 #pragma once
 
-#include <mbgl/gl/gl_impl.hpp>
-
-#include <stdexcept>
-#include <limits>
+#include <mbgl/gl/gl_function_pointers.hpp>
 
 namespace mbgl {
 namespace gl {
 
-struct Error : std::runtime_error {
-    using std::runtime_error::runtime_error;
-};
+/**
+ * @brief Hook for the underlying platform to register
+ * the GL function pointers.
+ */
+void glLoader();
 
-void checkError(const char *cmd, const char *file, int line);
+/**
+ * @brief Get the global table of OpenGL function pointers.
+ *
+ * @return Table of OpenGL function pointers.
+ */
+const GLFunctionPointers &getGLFunctionPointers();
 
-#ifndef NDEBUG
-#define MBGL_CHECK_ERROR(cmd) ([&]() { struct __MBGL_C_E { ~__MBGL_C_E() noexcept(false) { ::mbgl::gl::checkError(#cmd, __FILE__, __LINE__); } } __MBGL_C_E; return cmd; }())
-#else
-#define MBGL_CHECK_ERROR(cmd) (cmd)
-#endif
+/**
+ * @brief Set the global table of OpenGL function pointers.
+ *
+ * @param pointers Table of OpenGL function pointers.
+ */
+void setGLFunctionPointers(const GLFunctionPointers &pointers);
 
 } // namespace gl
 } // namespace mbgl

@@ -55,10 +55,10 @@ void RenderCustomLayer::render(PaintParameters& paintParameters, RenderSource*) 
     if (host != impl().host) {
         //If the context changed, deinitialize the previous one before initializing the new one.
         if (host && !contextDestroyed) {
-            MBGL_CHECK_ERROR(host->deinitialize());
+            host->deinitialize();
         }
         host = impl().host;
-        MBGL_CHECK_ERROR(host->initialize());
+        host->initialize();
     }
 
     gl::Context& glContext = paintParameters.context;
@@ -85,7 +85,7 @@ void RenderCustomLayer::render(PaintParameters& paintParameters, RenderSource*) 
     state.getProjMatrix(projMatrix);
     parameters.projectionMatrix = projMatrix;
 
-    MBGL_CHECK_ERROR(host->render(parameters));
+    host->render(parameters);
 
     // Reset the view back to our original one, just in case the CustomLayer changed
     // the viewport or Framebuffer.

@@ -117,14 +117,6 @@ public:
         return { size, readFramebuffer(size, format, flip) };
     }
 
-#if not MBGL_USE_GLES2
-    template <typename Image>
-    void drawPixels(const Image& image) {
-        auto format = image.channels == 4 ? TextureFormat::RGBA : TextureFormat::Alpha;
-        drawPixels(image.size, image.data.get(), format);
-    }
-#endif // MBGL_USE_GLES2
-
     // Create a texture from an image with data.
     template <typename Image>
     Texture createTexture(const Image& image,
@@ -234,15 +226,8 @@ public:
     State<value::PixelStorePack> pixelStorePack;
     State<value::PixelStoreUnpack> pixelStoreUnpack;
 
-#if not MBGL_USE_GLES2
-    State<value::PixelZoom> pixelZoom;
-    State<value::RasterPos> rasterPos;
-    State<value::PixelTransferDepth> pixelTransferDepth;
-    State<value::PixelTransferStencil> pixelTransferStencil;
-#endif // MBGL_USE_GLES2
-
     bool supportsHalfFloatTextures = false;
-    const uint32_t maximumVertexBindingCount;
+    uint32_t maximumVertexBindingCount;
     static constexpr const uint32_t minimumRequiredVertexBindingCount = 8;
     
 private:
@@ -267,9 +252,6 @@ private:
     State<value::CullFace> cullFace;
     State<value::CullFaceSide> cullFaceSide;
     State<value::FrontFace> frontFace;
-#if not MBGL_USE_GLES2
-    State<value::PointSize> pointSize;
-#endif // MBGL_USE_GLES2
 
     UniqueBuffer createVertexBuffer(const void* data, std::size_t size, const BufferUsage usage);
     void updateVertexBuffer(UniqueBuffer& buffer, const void* data, std::size_t size);
@@ -280,9 +262,6 @@ private:
     UniqueFramebuffer createFramebuffer();
     UniqueRenderbuffer createRenderbuffer(RenderbufferType, Size size);
     std::unique_ptr<uint8_t[]> readFramebuffer(Size, TextureFormat, bool flip);
-#if not MBGL_USE_GLES2
-    void drawPixels(Size size, const void* data, TextureFormat);
-#endif // MBGL_USE_GLES2
 
     bool supportsVertexArrays() const;
 

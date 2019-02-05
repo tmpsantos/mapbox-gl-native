@@ -508,6 +508,8 @@
         "mbgl/gl/features.hpp": "src/mbgl/gl/features.hpp",
         "mbgl/gl/framebuffer.hpp": "src/mbgl/gl/framebuffer.hpp",
         "mbgl/gl/gl.hpp": "src/mbgl/gl/gl.hpp",
+        "mbgl/gl/gl_function_pointers.hpp": "src/mbgl/gl/gl_function_pointers.hpp",
+        "mbgl/gl/gl_types.hpp": "src/mbgl/gl/gl_types.hpp",
         "mbgl/gl/index_buffer.hpp": "src/mbgl/gl/index_buffer.hpp",
         "mbgl/gl/object.hpp": "src/mbgl/gl/object.hpp",
         "mbgl/gl/primitives.hpp": "src/mbgl/gl/primitives.hpp",

@@ -474,37 +474,6 @@ void Renderer::Impl::render(const UpdateParameters& updateParameters) {
         }
     }
 
-#if not MBGL_USE_GLES2 and not defined(NDEBUG)
-    // Render tile clip boundaries, using stencil buffer to calculate fill color.
-    if (parameters.debugOptions & MapDebugOptions::StencilClip) {
-        parameters.context.setStencilMode(gl::StencilMode::disabled());
-        parameters.context.setDepthMode(gl::DepthMode::disabled());
-        parameters.context.setColorMode(gl::ColorMode::unblended());
-        parameters.context.program = 0;
-
-        // Reset the value in case someone else changed it, or it's dirty.
-        parameters.context.pixelTransferStencil = gl::value::PixelTransferStencil::Default;
-
-        // Read the stencil buffer
-        const auto viewport = parameters.context.viewport.getCurrentValue();
-        auto image = parameters.context.readFramebuffer<AlphaImage, gl::TextureFormat::Stencil>(viewport.size, false);
-
-        // Scale the Stencil buffer to cover the entire color space.
-        auto it = image.data.get();
-        auto end = it + viewport.size.width * viewport.size.height;
-        const auto factor = 255.0f / *std::max_element(it, end);
-        for (; it != end; ++it) {
-            *it *= factor;
-        }
-
-        parameters.context.pixelZoom = { 1, 1 };
-        parameters.context.rasterPos = { -1, -1, 0, 1 };
-        parameters.context.drawPixels(image);
-
-        return;
-    }
-#endif
-
     // Actually render the layers
 
     parameters.depthRangeSize = 1 - (order.size() + 2) * parameters.numSublayers * parameters.depthEpsilon;
@@ -556,29 +525,6 @@ void Renderer::Impl::render(const UpdateParameters& updateParameters) {
             }
         }
     }
-
-#if not MBGL_USE_GLES2 and not defined(NDEBUG)
-    // Render the depth buffer.
-    if (parameters.debugOptions & MapDebugOptions::DepthBuffer) {
-        parameters.context.setStencilMode(gl::StencilMode::disabled());
-        parameters.context.setDepthMode(gl::DepthMode::disabled());
-        parameters.context.setColorMode(gl::ColorMode::unblended());
-        parameters.context.program = 0;
-
-        // Scales the values in the depth buffer so that they cover the entire grayscale range. This
-        // makes it easier to spot tiny differences.
-        const float base = 1.0f / (1.0f - parameters.depthRangeSize);
-        parameters.context.pixelTransferDepth = { base, 1.0f - base };
-
-        // Read the stencil buffer
-        auto viewport = parameters.context.viewport.getCurrentValue();
-        auto image = parameters.context.readFramebuffer<AlphaImage, gl::TextureFormat::Depth>(viewport.size, false);
-
-        parameters.context.pixelZoom = { 1, 1 };
-        parameters.context.rasterPos = { -1, -1, 0, 1 };
-        parameters.context.drawPixels(image);
-    }
-#endif
 
     // TODO: Find a better way to unbind VAOs after we're done with them without introducing
     // unnecessary bind(0)/bind(N) sequences.

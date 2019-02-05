@@ -37,43 +37,43 @@ void main() {
 class TestLayer : public mbgl::style::CustomLayerHost {
 public:
     void initialize() {
-        program = MBGL_CHECK_ERROR(glCreateProgram());
-        vertexShader = MBGL_CHECK_ERROR(glCreateShader(GL_VERTEX_SHADER));
-        fragmentShader = MBGL_CHECK_ERROR(glCreateShader(GL_FRAGMENT_SHADER));
+        program = mbgl::gl::getGLFunctionPointers().glCreateProgram();
+        vertexShader = mbgl::gl::getGLFunctionPointers().glCreateShader(GL_VERTEX_SHADER);
+        fragmentShader = mbgl::gl::getGLFunctionPointers().glCreateShader(GL_FRAGMENT_SHADER);
 
-        MBGL_CHECK_ERROR(glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr));
-        MBGL_CHECK_ERROR(glCompileShader(vertexShader));
-        MBGL_CHECK_ERROR(glAttachShader(program, vertexShader));
-        MBGL_CHECK_ERROR(glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr));
-        MBGL_CHECK_ERROR(glCompileShader(fragmentShader));
-        MBGL_CHECK_ERROR(glAttachShader(program, fragmentShader));
-        MBGL_CHECK_ERROR(glLinkProgram(program));
-        a_pos = MBGL_CHECK_ERROR(glGetAttribLocation(program, "a_pos"));
+        mbgl::gl::getGLFunctionPointers().glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+        mbgl::gl::getGLFunctionPointers().glCompileShader(vertexShader);
+        mbgl::gl::getGLFunctionPointers().glAttachShader(program, vertexShader);
+        mbgl::gl::getGLFunctionPointers().glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+        mbgl::gl::getGLFunctionPointers().glCompileShader(fragmentShader);
+        mbgl::gl::getGLFunctionPointers().glAttachShader(program, fragmentShader);
+        mbgl::gl::getGLFunctionPointers().glLinkProgram(program);
+        a_pos = mbgl::gl::getGLFunctionPointers().glGetAttribLocation(program, "a_pos");
 
         GLfloat triangle[] = { 0, 0.5, 0.5, -0.5, -0.5, -0.5 };
-        MBGL_CHECK_ERROR(glGenBuffers(1, &buffer));
-        MBGL_CHECK_ERROR(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-        MBGL_CHECK_ERROR(glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(GLfloat), triangle, GL_STATIC_DRAW));
+        mbgl::gl::getGLFunctionPointers().glGenBuffers(1, &buffer);
+        mbgl::gl::getGLFunctionPointers().glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        mbgl::gl::getGLFunctionPointers().glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(GLfloat), triangle, GL_STATIC_DRAW);
     }
 
     void render(const mbgl::style::CustomLayerRenderParameters&) {
-        MBGL_CHECK_ERROR(glUseProgram(program));
-        MBGL_CHECK_ERROR(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-        MBGL_CHECK_ERROR(glEnableVertexAttribArray(a_pos));
-        MBGL_CHECK_ERROR(glVertexAttribPointer(a_pos, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
-        MBGL_CHECK_ERROR(glDrawArrays(GL_TRIANGLE_STRIP, 0, 3));
+        mbgl::gl::getGLFunctionPointers().glUseProgram(program);
+        mbgl::gl::getGLFunctionPointers().glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        mbgl::gl::getGLFunctionPointers().glEnableVertexAttribArray(a_pos);
+        mbgl::gl::getGLFunctionPointers().glVertexAttribPointer(a_pos, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+        mbgl::gl::getGLFunctionPointers().glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
     }
 
     void contextLost() {}
 
     void deinitialize() {
          if (program) {
-                MBGL_CHECK_ERROR(glDeleteBuffers(1, &buffer));
-                MBGL_CHECK_ERROR(glDetachShader(program, vertexShader));
-                MBGL_CHECK_ERROR(glDetachShader(program, fragmentShader));
-                MBGL_CHECK_ERROR(glDeleteShader(vertexShader));
-                MBGL_CHECK_ERROR(glDeleteShader(fragmentShader));
-                MBGL_CHECK_ERROR(glDeleteProgram(program));
+                mbgl::gl::getGLFunctionPointers().glDeleteBuffers(1, &buffer);
+                mbgl::gl::getGLFunctionPointers().glDetachShader(program, vertexShader);
+                mbgl::gl::getGLFunctionPointers().glDetachShader(program, fragmentShader);
+                mbgl::gl::getGLFunctionPointers().glDeleteShader(vertexShader);
+                mbgl::gl::getGLFunctionPointers().glDeleteShader(fragmentShader);
+                mbgl::gl::getGLFunctionPointers().glDeleteProgram(program);
             }
     }
 

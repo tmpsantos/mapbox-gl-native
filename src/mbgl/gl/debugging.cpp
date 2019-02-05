@@ -10,9 +10,9 @@ namespace gl {
 DebugGroup::DebugGroup(const Context& context_, const std::string& name) : context(context_) {
     if (auto debugging = context.getDebuggingExtension()) {
         if (debugging->pushDebugGroup) {
-            MBGL_CHECK_ERROR(debugging->pushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, GLsizei(name.size()), name.c_str()));
+            debugging->pushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, GLsizei(name.size()), name.c_str());
         } else if (debugging->pushGroupMarkerEXT) {
-            MBGL_CHECK_ERROR(debugging->pushGroupMarkerEXT(GLsizei(name.size() + 1), name.c_str()));
+            debugging->pushGroupMarkerEXT(GLsizei(name.size() + 1), name.c_str());
         }
     }
 }
@@ -20,9 +20,9 @@ DebugGroup::DebugGroup(const Context& context_, const std::string& name) : conte
 DebugGroup::~DebugGroup() {
     if (auto debugging = context.getDebuggingExtension()) {
         if (debugging->popDebugGroup) {
-            MBGL_CHECK_ERROR(debugging->popDebugGroup());
+            debugging->popDebugGroup();
         } else if (debugging->popGroupMarkerEXT) {
-            MBGL_CHECK_ERROR(debugging->popGroupMarkerEXT());
+            debugging->popGroupMarkerEXT();
         }
     }
 }
