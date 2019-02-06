@@ -94,7 +94,7 @@ Context::Context() {
 
     std::call_once(once, gl::glLoader);
 
-    getGLFunctionPointers().glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &value);
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &value);
     maximumVertexBindingCount = value;
 }
 
@@ -105,9 +105,7 @@ Context::~Context() {
 }
 
 void Context::initializeExtensions(const std::function<gl::ProcAddress(const char*)>& getProcAddress) {
-    if (const auto* extensions =
-            reinterpret_cast<const char*>(getGLFunctionPointers().glGetString(GL_EXTENSIONS))) {
-
+    if (const auto* extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS))) {
         auto fn = [&](
             std::initializer_list<std::pair<const char*, const char*>> probes) -> ProcAddress {
             for (auto probe : probes) {
@@ -121,7 +119,7 @@ void Context::initializeExtensions(const std::function<gl::ProcAddress(const cha
         };
 
         static const std::string renderer = []() {
-            std::string r = reinterpret_cast<const char*>(getGLFunctionPointers().glGetString(GL_RENDERER));
+            std::string r = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
             Log::Info(Event::General, "GPU Identifier: %s", r.c_str());
             return r;
         }();
@@ -181,24 +179,24 @@ void Context::enableDebugging() {
 }
 
 UniqueShader Context::createShader(ShaderType type, const std::string& source) {
-    UniqueShader result { getGLFunctionPointers().glCreateShader(static_cast<GLenum>(type)), { this } };
+    UniqueShader result { glCreateShader(static_cast<GLenum>(type)), { this } };
 
     const GLchar* sources = source.data();
     const auto lengths = static_cast<GLsizei>(source.length());
-    getGLFunctionPointers().glShaderSource(result, 1, &sources, &lengths);
-    getGLFunctionPointers().glCompileShader(result);
+    glShaderSource(result, 1, &sources, &lengths);
+    glCompileShader(result);
 
     GLint status = 0;
-    getGLFunctionPointers().glGetShaderiv(result, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(result, GL_COMPILE_STATUS, &status);
     if (status != 0) {
         return result;
     }
 
     GLint logLength;
-    getGLFunctionPointers().glGetShaderiv(result, GL_INFO_LOG_LENGTH, &logLength);
+    glGetShaderiv(result, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0) {
         const auto log = std::make_unique<GLchar[]>(logLength);
-        getGLFunctionPointers().glGetShaderInfoLog(result, logLength, &logLength, log.get());
+        glGetShaderInfoLog(result, logLength, &logLength, log.get());
         Log::Error(Event::Shader, "Shader failed to compile: %s", log.get());
     }
 
@@ -206,10 +204,10 @@ UniqueShader Context::createShader(ShaderType type, const std::string& source) {
 }
 
 UniqueProgram Context::createProgram(ShaderID vertexShader, ShaderID fragmentShader) {
-    UniqueProgram result { getGLFunctionPointers().glCreateProgram(), { this } };
+    UniqueProgram result { glCreateProgram(), { this } };
 
-    getGLFunctionPointers().glAttachShader(result, vertexShader);
-    getGLFunctionPointers().glAttachShader(result, fragmentShader);
+    glAttachShader(result, vertexShader);
+    glAttachShader(result, fragmentShader);
 
     return result;
 }
@@ -218,7 +216,7 @@ UniqueProgram Context::createProgram(ShaderID vertexShader, ShaderID fragmentSha
 UniqueProgram Context::createProgram(BinaryProgramFormat binaryFormat,
                                      const std::string& binaryProgram) {
     assert(supportsProgramBinaries());
-    UniqueProgram result{ getGLFunctionPointers().glCreateProgram(), { this } };
+    UniqueProgram result{ glCreateProgram(), { this } };
     programBinary->programBinary(result, static_cast<GLenum>(binaryFormat),
                                  binaryProgram.data(),
                                  static_cast<GLint>(binaryProgram.size()));
@@ -232,22 +230,22 @@ UniqueProgram Context::createProgram(BinaryProgramFormat, const std::string&) {
 #endif
 
 void Context::linkProgram(ProgramID program_) {
-    getGLFunctionPointers().glLinkProgram(program_);
+    glLinkProgram(program_);
     verifyProgramLinkage(program_);
 }
 
 void Context::verifyProgramLinkage(ProgramID program_) {
     GLint status;
-    getGLFunctionPointers().glGetProgramiv(program_, GL_LINK_STATUS, &status);
+    glGetProgramiv(program_, GL_LINK_STATUS, &status);
     if (status == GL_TRUE) {
         return;
     }
 
     GLint logLength;
-    getGLFunctionPointers().glGetProgramiv(program_, GL_INFO_LOG_LENGTH, &logLength);
+    glGetProgramiv(program_, GL_INFO_LOG_LENGTH, &logLength);
     const auto log = std::make_unique<GLchar[]>(logLength);
     if (logLength > 0) {
-        getGLFunctionPointers().glGetProgramInfoLog(program_, logLength, &logLength, log.get());
+        glGetProgramInfoLog(program_, logLength, &logLength, log.get());
         Log::Error(Event::Shader, "Program failed to link: %s", log.get());
     }
 
@@ -256,25 +254,25 @@ void Context::verifyProgramLinkage(ProgramID program_) {
 
 UniqueBuffer Context::createVertexBuffer(const void* data, std::size_t size, const BufferUsage usage) {
     BufferID id = 0;
-    getGLFunctionPointers().glGenBuffers(1, &id);
+    glGenBuffers(1, &id);
     UniqueBuffer result { std::move(id), { this } };
     vertexBuffer = result;
-    getGLFunctionPointers().glBufferData(GL_ARRAY_BUFFER, size, data, static_cast<GLenum>(usage));
+    glBufferData(GL_ARRAY_BUFFER, size, data, static_cast<GLenum>(usage));
     return result;
 }
 
 void Context::updateVertexBuffer(UniqueBuffer& buffer, const void* data, std::size_t size) {
     vertexBuffer = buffer;
-    getGLFunctionPointers().glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
 UniqueBuffer Context::createIndexBuffer(const void* data, std::size_t size, const BufferUsage usage) {
     BufferID id = 0;
-    getGLFunctionPointers().glGenBuffers(1, &id);
+    glGenBuffers(1, &id);
     UniqueBuffer result { std::move(id), { this } };
     bindVertexArray = 0;
     globalVertexArrayState.indexBuffer = result;
-    getGLFunctionPointers().glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, static_cast<GLenum>(usage));
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, static_cast<GLenum>(usage));
     return result;
 }
 
@@ -283,14 +281,14 @@ void Context::updateIndexBuffer(UniqueBuffer& buffer, const void* data, std::siz
     // so that we don't mess up another VAO
     bindVertexArray = 0;
     globalVertexArrayState.indexBuffer = buffer;
-    getGLFunctionPointers().glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
 }
 
 
 UniqueTexture Context::createTexture() {
     if (pooledTextures.empty()) {
         pooledTextures.resize(TextureMax);
-        getGLFunctionPointers().glGenTextures(TextureMax, pooledTextures.data());
+        glGenTextures(TextureMax, pooledTextures.data());
     }
 
     TextureID id = pooledTextures.back();
@@ -316,7 +314,7 @@ bool Context::supportsProgramBinaries() const {
     // https://chromium.googlesource.com/chromium/src/gpu/+/master/config/gpu_driver_bug_list.json#2316
     // Blacklist Vivante GC4000 due to bugs when linking loaded programs:
     // https://github.com/mapbox/mapbox-gl-native/issues/10704
-    const std::string renderer = reinterpret_cast<const char*>(getGLFunctionPointers().glGetString(GL_RENDERER));
+    const std::string renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
     if (renderer.find("Adreno (TM) 3") != std::string::npos
      || renderer.find("Adreno (TM) 4") != std::string::npos
      || renderer.find("Adreno (TM) 5") != std::string::npos
@@ -333,7 +331,7 @@ Context::getBinaryProgram(ProgramID program_) const {
         return {};
     }
     GLint binaryLength;
-    getGLFunctionPointers().glGetProgramiv(program_, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
+    glGetProgramiv(program_, GL_PROGRAM_BINARY_LENGTH, &binaryLength);
     std::string binary;
     binary.resize(binaryLength);
     GLenum binaryFormat;
@@ -365,18 +363,18 @@ VertexArray Context::createVertexArray() {
 
 UniqueFramebuffer Context::createFramebuffer() {
     FramebufferID id = 0;
-    getGLFunctionPointers().glGenFramebuffers(1, &id);
+    glGenFramebuffers(1, &id);
     return UniqueFramebuffer{ std::move(id), { this } };
 }
 
 UniqueRenderbuffer Context::createRenderbuffer(const RenderbufferType type, const Size size) {
     RenderbufferID id = 0;
-    getGLFunctionPointers().glGenRenderbuffers(1, &id);
+    glGenRenderbuffers(1, &id);
     UniqueRenderbuffer renderbuffer{ std::move(id), { this } };
 
     bindRenderbuffer = renderbuffer;
-    getGLFunctionPointers().
-        glRenderbufferStorage(GL_RENDERBUFFER, static_cast<GLenum>(type), size.width, size.height);
+
+    glRenderbufferStorage(GL_RENDERBUFFER, static_cast<GLenum>(type), size.width, size.height);
     bindRenderbuffer = 0;
     return renderbuffer;
 }
@@ -389,7 +387,7 @@ std::unique_ptr<uint8_t[]> Context::readFramebuffer(const Size size, const Textu
     // tightly packed into the buffer to avoid buffer overruns.
     pixelStorePack = { 1 };
 
-    getGLFunctionPointers().glReadPixels(0, 0, size.width, size.height, static_cast<GLenum>(format),
+    glReadPixels(0, 0, size.width, size.height, static_cast<GLenum>(format),
                                   GL_UNSIGNED_BYTE, data.get());
 
     if (flip) {
@@ -408,7 +406,7 @@ std::unique_ptr<uint8_t[]> Context::readFramebuffer(const Size size, const Textu
 namespace {
 
 void checkFramebuffer() {
-    GLenum status = getGLFunctionPointers().glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    GLenum status = GLFunctions::glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         switch (status) {
         case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
@@ -439,13 +437,13 @@ void checkFramebuffer() {
 void bindDepthStencilRenderbuffer(
     const Renderbuffer<RenderbufferType::DepthStencil>& depthStencil) {
 #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                               GL_RENDERBUFFER, depthStencil.renderbuffer);
+    GLFunctions::glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                           GL_RENDERBUFFER, depthStencil.renderbuffer);
 #else
-    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
-                                               depthStencil.renderbuffer);
-    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                               GL_RENDERBUFFER, depthStencil.renderbuffer);
+    GLFunctions::glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
+                                           depthStencil.renderbuffer);
+    GLFunctions::glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                           GL_RENDERBUFFER, depthStencil.renderbuffer);
 #endif
 }
 
@@ -459,7 +457,7 @@ Context::createFramebuffer(const Renderbuffer<RenderbufferType::RGBA>& color,
     }
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                                GL_RENDERBUFFER, color.renderbuffer);
     bindDepthStencilRenderbuffer(depthStencil);
     checkFramebuffer();
@@ -469,7 +467,7 @@ Context::createFramebuffer(const Renderbuffer<RenderbufferType::RGBA>& color,
 Framebuffer Context::createFramebuffer(const Renderbuffer<RenderbufferType::RGBA>& color) {
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                                GL_RENDERBUFFER, color.renderbuffer);
     checkFramebuffer();
     return { color.size, std::move(fbo) };
@@ -483,7 +481,7 @@ Context::createFramebuffer(const Texture& color,
     }
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    getGLFunctionPointers().glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                                             color.texture, 0);
     bindDepthStencilRenderbuffer(depthStencil);
     checkFramebuffer();
@@ -493,7 +491,7 @@ Context::createFramebuffer(const Texture& color,
 Framebuffer Context::createFramebuffer(const Texture& color) {
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    getGLFunctionPointers().glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                                             color.texture, 0);
     checkFramebuffer();
     return { color.size, std::move(fbo) };
@@ -507,8 +505,8 @@ Context::createFramebuffer(const Texture& color,
     }
     auto fbo = createFramebuffer();
     bindFramebuffer = fbo;
-    getGLFunctionPointers().glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color.texture, 0);
-    getGLFunctionPointers().glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthTarget.renderbuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color.texture, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthTarget.renderbuffer);
     checkFramebuffer();
     return { depthTarget.size, std::move(fbo) };
 }
@@ -520,10 +518,10 @@ Context::createTexture(const Size size, const void* data, TextureFormat format, 
     updateTexture(obj, size, data, format, unit, type);
     // We are using clamp to edge here since OpenGL ES doesn't allow GL_REPEAT on NPOT textures.
     // We use those when the pixelRatio isn't a power of two, e.g. on iPhone 6 Plus.
-    getGLFunctionPointers().glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    getGLFunctionPointers().glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    getGLFunctionPointers().glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    getGLFunctionPointers().glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     return obj;
 }
 
@@ -531,7 +529,7 @@ void Context::updateTexture(
     TextureID id, const Size size, const void* data, TextureFormat format, TextureUnit unit, TextureType type) {
     activeTextureUnit = unit;
     texture[unit] = id;
-    getGLFunctionPointers().glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLenum>(format), size.width,
+    glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLenum>(format), size.width,
                                   size.height, 0, static_cast<GLenum>(format), static_cast<GLenum>(type),
                                   data);
 }
@@ -547,28 +545,24 @@ void Context::bindTexture(Texture& obj,
         texture[unit] = obj.texture;
 
         if (filter != obj.filter || mipmap != obj.mipmap) {
-            getGLFunctionPointers().glTexParameteri(
+            glTexParameteri(
                 GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                 filter == TextureFilter::Linear
                     ? (mipmap == TextureMipMap::Yes ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR)
                     : (mipmap == TextureMipMap::Yes ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST));
-            getGLFunctionPointers().
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                                filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                            filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST);
             obj.filter = filter;
             obj.mipmap = mipmap;
         }
         if (wrapX != obj.wrapX) {
-
-            getGLFunctionPointers().
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-                                wrapX == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+                            wrapX == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
             obj.wrapX = wrapX;
         }
         if (wrapY != obj.wrapY) {
-            getGLFunctionPointers().
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                                wrapY == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+                            wrapY == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT);
             obj.wrapY = wrapY;
         }
     } else if (texture[unit] != obj.texture) {
@@ -643,7 +637,7 @@ void Context::clear(optional<mbgl::Color> color,
         stencilMask = value::StencilMask::Default;
     }
 
-    getGLFunctionPointers().glClear(mask);
+    glClear(mask);
 }
 
 void Context::setCullFaceMode(const CullFaceMode& mode) {
@@ -722,7 +716,7 @@ void Context::setColorMode(const ColorMode& color) {
 void Context::draw(PrimitiveType primitiveType,
                    std::size_t indexOffset,
                    std::size_t indexLength) {
-    getGLFunctionPointers().glDrawElements(
+    glDrawElements(
         static_cast<GLenum>(primitiveType),
         static_cast<GLsizei>(indexLength),
         GL_UNSIGNED_SHORT,
@@ -734,12 +728,12 @@ void Context::performCleanup() {
         if (program == id) {
             program.setDirty();
         }
-        getGLFunctionPointers().glDeleteProgram(id);
+        glDeleteProgram(id);
     }
     abandonedPrograms.clear();
 
     for (auto id : abandonedShaders) {
-        getGLFunctionPointers().glDeleteShader(id);
+        glDeleteShader(id);
     }
     abandonedShaders.clear();
 
@@ -751,7 +745,7 @@ void Context::performCleanup() {
                 globalVertexArrayState.indexBuffer.setDirty();
             }
         }
-        getGLFunctionPointers().glDeleteBuffers(int(abandonedBuffers.size()), abandonedBuffers.data());
+        glDeleteBuffers(int(abandonedBuffers.size()), abandonedBuffers.data());
         abandonedBuffers.clear();
     }
 
@@ -763,7 +757,7 @@ void Context::performCleanup() {
                 }
             }
         }
-        getGLFunctionPointers().glDeleteTextures(int(abandonedTextures.size()), abandonedTextures.data());
+        glDeleteTextures(int(abandonedTextures.size()), abandonedTextures.data());
         abandonedTextures.clear();
     }
 
@@ -784,13 +778,13 @@ void Context::performCleanup() {
                 bindFramebuffer.setDirty();
             }
         }
-        getGLFunctionPointers().
-            glDeleteFramebuffers(int(abandonedFramebuffers.size()), abandonedFramebuffers.data());
+
+        glDeleteFramebuffers(int(abandonedFramebuffers.size()), abandonedFramebuffers.data());
         abandonedFramebuffers.clear();
     }
 
     if (!abandonedRenderbuffers.empty()) {
-        getGLFunctionPointers().glDeleteRenderbuffers(int(abandonedRenderbuffers.size()),
+        glDeleteRenderbuffers(int(abandonedRenderbuffers.size()),
                                                abandonedRenderbuffers.data());
         abandonedRenderbuffers.clear();
     }

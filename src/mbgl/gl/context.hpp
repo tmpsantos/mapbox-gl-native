@@ -7,6 +7,7 @@
 #include <mbgl/gl/texture.hpp>
 #include <mbgl/gl/renderbuffer.hpp>
 #include <mbgl/gl/framebuffer.hpp>
+#include <mbgl/gl/gl_functions.hpp>
 #include <mbgl/gl/vertex_buffer.hpp>
 #include <mbgl/gl/index_buffer.hpp>
 #include <mbgl/gl/vertex_array.hpp>
@@ -36,7 +37,7 @@ class Debugging;
 class ProgramBinary;
 } // namespace extension
 
-class Context {
+class Context : private GLFunctions {
 public:
     Context();
     ~Context();
