@@ -24,6 +24,7 @@
         "src/mbgl/gl/debugging_extension.cpp",
         "src/mbgl/gl/depth_mode.cpp",
         "src/mbgl/gl/gl.cpp",
+        "src/mbgl/gl/gl_functions.cpp",
         "src/mbgl/gl/object.cpp",
         "src/mbgl/gl/stencil_mode.cpp",
         "src/mbgl/gl/uniform.cpp",
