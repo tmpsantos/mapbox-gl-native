@@ -6,7 +6,8 @@ namespace mbgl {
 namespace gl {
 
 /**
- * @brief Holds pointers to OpenGL functions.
+ * @brief Holds pointers to OpenGL ES 2.0 functions, provided
+ * by the underlying platform.
  */
 struct GLFunctionPointers {
     /// Pointer to glActiveTexture OpenGL function.
