@@ -2,7 +2,6 @@
 
 #include <mbgl/map/map.hpp>
 #include <mbgl/gl/headless_frontend.hpp>
-#include <mbgl/util/default_thread_pool.hpp>
 #include <mbgl/renderer/renderer.hpp>
 #include <mbgl/style/style.hpp>
 #include <mbgl/style/image.hpp>
@@ -32,9 +31,8 @@ public:
 
     util::RunLoop loop;
     DefaultFileSource fileSource{ "benchmark/fixtures/api/cache.db", "." };
-    ThreadPool threadPool{ 4 };
-    HeadlessFrontend frontend { { 1000, 1000 }, 1, fileSource, threadPool };
-    Map map { frontend, MapObserver::nullObserver(), frontend.getSize(), 1, fileSource, threadPool, MapMode::Static};
+    HeadlessFrontend frontend { { 1000, 1000 }, 1, fileSource };
+    Map map { frontend, MapObserver::nullObserver(), frontend.getSize(), 1, fileSource, MapMode::Static};
     ScreenBox box{{ 0, 0 }, { 1000, 1000 }};
 };
 

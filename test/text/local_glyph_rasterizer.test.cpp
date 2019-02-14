@@ -6,7 +6,6 @@
 #include <mbgl/util/color.hpp>
 #include <mbgl/renderer/renderer.hpp>
 #include <mbgl/gl/headless_frontend.hpp>
-#include <mbgl/util/default_thread_pool.hpp>
 #include <mbgl/style/style.hpp>
 
 /*
@@ -32,17 +31,16 @@ namespace {
 class LocalGlyphRasterizerTest {
 public:
     LocalGlyphRasterizerTest(const optional<std::string> fontFamily)
-        : frontend(pixelRatio, fileSource, threadPool, optional<std::string>(), GLContextMode::Unique, fontFamily)
+        : frontend(pixelRatio, fileSource, optional<std::string>(), GLContextMode::Unique, fontFamily)
     {
     }
 
     util::RunLoop loop;
     StubFileSource fileSource;
-    ThreadPool threadPool { 4 };
     float pixelRatio { 1 };
     HeadlessFrontend frontend;
     Map map { frontend, MapObserver::nullObserver(), frontend.getSize(), pixelRatio, fileSource,
-              threadPool, MapMode::Static};
+              MapMode::Static};
 
     void checkRendering(const char * name) {
         test::checkImage(std::string("test/fixtures/local_glyphs/") + name,

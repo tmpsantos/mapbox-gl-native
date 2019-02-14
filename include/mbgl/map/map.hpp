@@ -19,7 +19,6 @@
 namespace mbgl {
 
 class FileSource;
-class Scheduler;
 class RendererFrontend;
 
 namespace style {
@@ -34,7 +33,6 @@ public:
                  Size size,
                  float pixelRatio,
                  FileSource&,
-                 Scheduler&,
                  MapMode mapMode = MapMode::Continuous,
                  ConstrainMode constrainMode = ConstrainMode::HeightOnly,
                  ViewportMode viewportMode = ViewportMode::Default,

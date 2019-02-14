@@ -1,4 +1,6 @@
 #include <mbgl/tile/raster_tile.hpp>
+
+#include <mbgl/platform/background_scheduler.hpp>
 #include <mbgl/tile/raster_tile_worker.hpp>
 #include <mbgl/tile/tile_observer.hpp>
 #include <mbgl/tile/tile_loader_impl.hpp>
@@ -18,7 +20,7 @@ RasterTile::RasterTile(const OverscaledTileID& id_,
     : Tile(Kind::Raster, id_),
       loader(*this, id_, parameters, tileset),
       mailbox(std::make_shared<Mailbox>(*Scheduler::GetCurrent())),
-      worker(parameters.workerScheduler,
+      worker(platform::GetBackgroundScheduler(),
              ActorRef<RasterTile>(*this, mailbox)) {
 }
 

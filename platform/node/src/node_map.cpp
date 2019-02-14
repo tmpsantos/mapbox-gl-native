@@ -619,9 +619,9 @@ void NodeMap::cancel() {
         reinterpret_cast<NodeMap *>(h->data)->renderFinished();
     });
 
-    frontend = std::make_unique<mbgl::HeadlessFrontend>(mbgl::Size{ 256, 256 }, pixelRatio, *this, threadpool);
+    frontend = std::make_unique<mbgl::HeadlessFrontend>(mbgl::Size{ 256, 256 }, pixelRatio, *this);
     map = std::make_unique<mbgl::Map>(*frontend, mapObserver, frontend->getSize(), pixelRatio,
-                                      *this, threadpool, mode,
+                                      *this, mode,
                                       mbgl::ConstrainMode::HeightOnly,
                                       mbgl::ViewportMode::Default,
                                       crossSourceCollisions);
@@ -1199,13 +1199,12 @@ NodeMap::NodeMap(v8::Local<v8::Object> options)
             : true;
     }())
     , mapObserver(NodeMapObserver())
-    , frontend(std::make_unique<mbgl::HeadlessFrontend>(mbgl::Size { 256, 256 }, pixelRatio, *this, threadpool))
+    , frontend(std::make_unique<mbgl::HeadlessFrontend>(mbgl::Size { 256, 256 }, pixelRatio, *this))
     , map(std::make_unique<mbgl::Map>(*frontend,
                                       mapObserver,
                                       frontend->getSize(),
                                       pixelRatio,
                                       *this,
-                                      threadpool,
                                       mode,
                                       mbgl::ConstrainMode::HeightOnly,
                                       mbgl::ViewportMode::Default,

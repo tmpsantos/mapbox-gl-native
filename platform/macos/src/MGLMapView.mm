@@ -30,7 +30,6 @@
 #import <mbgl/annotation/annotation.hpp>
 #import <mbgl/map/camera.hpp>
 #import <mbgl/storage/reachability.h>
-#import <mbgl/util/default_thread_pool.hpp>
 #import <mbgl/style/image.hpp>
 #import <mbgl/renderer/renderer.hpp>
 #import <mbgl/renderer/renderer_backend.hpp>
@@ -42,7 +41,6 @@
 #import <mbgl/util/chrono.hpp>
 #import <mbgl/util/exception.hpp>
 #import <mbgl/util/run_loop.hpp>
-#import <mbgl/util/shared_thread_pool.hpp>
 #import <mbgl/util/string.hpp>
 #import <mbgl/util/projection.hpp>
 
@@ -163,7 +161,6 @@ public:
     mbgl::Map *_mbglMap;
     MGLMapViewImpl *_mbglView;
     std::unique_ptr<MGLRenderFrontend> _rendererFrontend;
-    std::shared_ptr<mbgl::ThreadPool> _mbglThreadPool;
 
     NSPanGestureRecognizer *_panGestureRecognizer;
     NSMagnificationGestureRecognizer *_magnificationGestureRecognizer;
@@ -282,13 +279,12 @@ public:
     NSURL *legacyCacheURL = [cachesDirectoryURL URLByAppendingPathComponent:@"cache.db"];
     [[NSFileManager defaultManager] removeItemAtURL:legacyCacheURL error:NULL];
 
-    _mbglThreadPool = mbgl::sharedThreadPool();
     MGLRendererConfiguration *config = [MGLRendererConfiguration currentConfiguration];
 
-    auto renderer = std::make_unique<mbgl::Renderer>(*_mbglView, config.scaleFactor, *config.fileSource, *_mbglThreadPool, config.contextMode, config.cacheDir, config.localFontFamilyName);
+    auto renderer = std::make_unique<mbgl::Renderer>(*_mbglView, config.scaleFactor, *config.fileSource, config.contextMode, config.cacheDir, config.localFontFamilyName);
     BOOL enableCrossSourceCollisions = !config.perSourceCollisions;
     _rendererFrontend = std::make_unique<MGLRenderFrontend>(std::move(renderer), self, *_mbglView, true);
-    _mbglMap = new mbgl::Map(*_rendererFrontend, *_mbglView, self.size, config.scaleFactor, *config.fileSource, *_mbglThreadPool, mbgl::MapMode::Continuous, mbgl::ConstrainMode::None, mbgl::ViewportMode::Default, enableCrossSourceCollisions);
+    _mbglMap = new mbgl::Map(*_rendererFrontend, *_mbglView, self.size, config.scaleFactor, *config.fileSource, mbgl::MapMode::Continuous, mbgl::ConstrainMode::None, mbgl::ViewportMode::Default, enableCrossSourceCollisions);
 
     // Install the OpenGL layer. Interface Builder’s synchronous drawing means
     // we can’t display a map, so don’t even bother to have a map layer.

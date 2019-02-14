@@ -1,14 +1,15 @@
 #include <mbgl/util/async_task.hpp>
-#include <mbgl/util/run_loop.hpp>
-#include <mbgl/util/default_thread_pool.hpp>
-#include <mbgl/actor/actor_ref.hpp>
 
+#include <mbgl/actor/actor_ref.hpp>
+#include <mbgl/platform/background_scheduler.hpp>
+#include <mbgl/util/run_loop.hpp>
 #include <mbgl/test/util.hpp>
 
 #include <atomic>
 #include <future>
 #include <vector>
 
+using namespace mbgl;
 using namespace mbgl::util;
 
 namespace {
@@ -104,8 +105,7 @@ TEST(AsyncTask, RequestCoalescingMultithreaded) {
     unsigned count = 0, numThreads = 25;
     AsyncTask async([&count] { ++count; });
 
-    mbgl::ThreadPool threads(numThreads);
-    auto mailbox = std::make_shared<mbgl::Mailbox>(threads);
+    auto mailbox = std::make_shared<mbgl::Mailbox>(platform::GetBackgroundScheduler());
 
     TestWorker worker(&async);
     mbgl::ActorRef<TestWorker> workerRef(worker, mailbox);
@@ -133,8 +133,7 @@ TEST(AsyncTask, ThreadSafety) {
 
     AsyncTask async([&count] { ++count; });
 
-    mbgl::ThreadPool threads(numThreads);
-    auto mailbox = std::make_shared<mbgl::Mailbox>(threads);
+    auto mailbox = std::make_shared<mbgl::Mailbox>(platform::GetBackgroundScheduler());
 
     TestWorker worker(&async);
     mbgl::ActorRef<TestWorker> workerRef(worker, mailbox);

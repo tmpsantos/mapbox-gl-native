@@ -7,7 +7,6 @@
 #include <mbgl/map/map.hpp>
 #include <mbgl/gl/context.hpp>
 #include <mbgl/gl/headless_frontend.hpp>
-#include <mbgl/util/default_thread_pool.hpp>
 #include <mbgl/storage/network_status.hpp>
 #include <mbgl/storage/default_file_source.hpp>
 #include <mbgl/storage/online_file_source.hpp>
@@ -31,14 +30,13 @@ class MapTest {
 public:
     util::RunLoop runLoop;
     FileSource fileSource;
-    ThreadPool threadPool { 4 };
     StubMapObserver observer;
     HeadlessFrontend frontend;
     Map map;
 
     MapTest(float pixelRatio = 1, MapMode mode = MapMode::Static)
-        : frontend(pixelRatio, fileSource, threadPool)
-        , map(frontend, observer, frontend.getSize(), pixelRatio, fileSource, threadPool, mode) {
+        : frontend(pixelRatio, fileSource)
+        , map(frontend, observer, frontend.getSize(), pixelRatio, fileSource, mode) {
     }
 
     template <typename T = FileSource>
@@ -46,8 +44,8 @@ public:
             float pixelRatio = 1, MapMode mode = MapMode::Static,
             typename std::enable_if<std::is_same<T, DefaultFileSource>::value>::type* = 0)
             : fileSource { cachePath, assetRoot }
-            , frontend(pixelRatio, fileSource, threadPool)
-            , map(frontend, observer, frontend.getSize(), pixelRatio, fileSource, threadPool, mode) {
+            , frontend(pixelRatio, fileSource)
+            , map(frontend, observer, frontend.getSize(), pixelRatio, fileSource, mode) {
     }
 };
 
@@ -656,7 +654,6 @@ TEST(Map, DontLoadUnneededTiles) {
 
 TEST(Map, TEST_DISABLED_ON_CI(ContinuousRendering)) {
     util::RunLoop runLoop;
-    ThreadPool threadPool { 4 };
     DefaultFileSource fileSource(":memory:", "test/fixtures/api/assets");
     float pixelRatio { 1 };
 
@@ -670,7 +667,7 @@ TEST(Map, TEST_DISABLED_ON_CI(ContinuousRendering)) {
 
     util::Timer timer;
 
-    HeadlessFrontend frontend(pixelRatio, fileSource, threadPool);
+    HeadlessFrontend frontend(pixelRatio, fileSource);
 
     StubMapObserver observer;
     observer.didFinishRenderingFrameCallback = [&] (MapObserver::RenderMode) {
@@ -682,7 +679,7 @@ TEST(Map, TEST_DISABLED_ON_CI(ContinuousRendering)) {
         });
     };
 
-    Map map(frontend, observer, frontend.getSize(), pixelRatio, fileSource, threadPool, MapMode::Continuous);
+    Map map(frontend, observer, frontend.getSize(), pixelRatio, fileSource, MapMode::Continuous);
     map.getStyle().loadJSON(util::read_file("test/fixtures/api/water.json"));
 
     runLoop.run();

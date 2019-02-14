@@ -17,7 +17,6 @@
 #include <mbgl/util/exception.hpp>
 #include <mbgl/util/mapbox.hpp>
 #include <mbgl/util/tile_coordinate.hpp>
-#include <mbgl/actor/scheduler.hpp>
 #include <mbgl/util/logging.hpp>
 #include <mbgl/math/log2.hpp>
 #include <utility>
@@ -42,7 +41,6 @@ public:
          MapObserver&,
          float pixelRatio,
          FileSource&,
-         Scheduler&,
          MapMode,
          ConstrainMode,
          ViewportMode,
@@ -69,7 +67,6 @@ public:
     MapObserver& observer;
     RendererFrontend& rendererFrontend;
     FileSource& fileSource;
-    Scheduler& scheduler;
 
     Transform transform;
 
@@ -96,7 +93,6 @@ Map::Map(RendererFrontend& rendererFrontend,
          const Size size,
          const float pixelRatio,
          FileSource& fileSource,
-         Scheduler& scheduler,
          MapMode mapMode,
          ConstrainMode constrainMode,
          ViewportMode viewportMode,
@@ -106,7 +102,6 @@ Map::Map(RendererFrontend& rendererFrontend,
                                   mapObserver,
                                   pixelRatio,
                                   fileSource,
-                                  scheduler,
                                   mapMode,
                                   constrainMode,
                                   viewportMode,
@@ -119,7 +114,6 @@ Map::Impl::Impl(Map& map_,
                 MapObserver& mapObserver,
                 float pixelRatio_,
                 FileSource& fileSource_,
-                Scheduler& scheduler_,
                 MapMode mode_,
                 ConstrainMode constrainMode_,
                 ViewportMode viewportMode_,
@@ -128,14 +122,13 @@ Map::Impl::Impl(Map& map_,
       observer(mapObserver),
       rendererFrontend(frontend),
       fileSource(fileSource_),
-      scheduler(scheduler_),
       transform(observer,
                 constrainMode_,
                 viewportMode_),
       mode(mode_),
       pixelRatio(pixelRatio_),
       crossSourceCollisions(crossSourceCollisions_),
-      style(std::make_unique<Style>(scheduler, fileSource, pixelRatio)),
+      style(std::make_unique<Style>(fileSource, pixelRatio)),
       annotationManager(*style) {
 
     style->impl->setObserver(this);

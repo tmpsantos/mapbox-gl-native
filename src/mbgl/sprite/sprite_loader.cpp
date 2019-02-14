@@ -2,6 +2,7 @@
 #include <mbgl/sprite/sprite_loader_worker.hpp>
 #include <mbgl/sprite/sprite_loader_observer.hpp>
 #include <mbgl/sprite/sprite_parser.hpp>
+#include <mbgl/platform/background_scheduler.hpp>
 #include <mbgl/util/logging.hpp>
 #include <mbgl/util/platform.hpp>
 #include <mbgl/util/std.hpp>
@@ -20,9 +21,9 @@ namespace mbgl {
 static SpriteLoaderObserver nullObserver;
 
 struct SpriteLoader::Loader {
-    Loader(Scheduler& scheduler, SpriteLoader& imageManager)
+    Loader(SpriteLoader& imageManager)
         : mailbox(std::make_shared<Mailbox>(*Scheduler::GetCurrent())),
-          worker(scheduler, ActorRef<SpriteLoader>(imageManager, mailbox)) {
+          worker(platform::GetBackgroundScheduler(), ActorRef<SpriteLoader>(imageManager, mailbox)) {
     }
 
     std::shared_ptr<const std::string> image;
@@ -40,14 +41,14 @@ SpriteLoader::SpriteLoader(float pixelRatio_)
 
 SpriteLoader::~SpriteLoader() = default;
 
-void SpriteLoader::load(const std::string& url, Scheduler& scheduler, FileSource& fileSource) {
+void SpriteLoader::load(const std::string& url, FileSource& fileSource) {
     if (url.empty()) {
         // Treat a non-existent sprite as a successfully loaded empty sprite.
         observer->onSpriteLoaded({});
         return;
     }
 
-    loader = std::make_unique<Loader>(scheduler, *this);
+    loader = std::make_unique<Loader>(*this);
 
     loader->jsonRequest = fileSource.request(Resource::spriteJSON(url, pixelRatio), [this](Response res) {
         if (res.error) {

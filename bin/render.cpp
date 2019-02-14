@@ -4,7 +4,6 @@
 #include <mbgl/util/default_styles.hpp>
 
 #include <mbgl/gl/headless_frontend.hpp>
-#include <mbgl/util/default_thread_pool.hpp>
 #include <mbgl/storage/default_file_source.hpp>
 #include <mbgl/style/style.hpp>
 
@@ -82,9 +81,8 @@ int main(int argc, char *argv[]) {
         fileSource.setAccessToken(std::string(token));
     }
 
-    ThreadPool threadPool(4);
-    HeadlessFrontend frontend({ width, height }, pixelRatio, fileSource, threadPool);
-    Map map(frontend, MapObserver::nullObserver(), frontend.getSize(), pixelRatio, fileSource, threadPool, MapMode::Static);
+    HeadlessFrontend frontend({ width, height }, pixelRatio, fileSource);
+    Map map(frontend, MapObserver::nullObserver(), frontend.getSize(), pixelRatio, fileSource, MapMode::Static);
 
     if (style.find("://") == std::string::npos) {
         style = std::string("file://") + style;
