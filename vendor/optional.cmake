@@ -4,6 +4,6 @@ add_library(optional INTERFACE)
 # usable versions of <experimental/optional>
 if(WIN32 OR MBGL_PLATFORM STREQUAL "android")
     target_include_directories(optional SYSTEM INTERFACE
-        ${CMAKE_SOURCE_DIR}/vendor/optional/include
+        ${CMAKE_CURRENT_LIST_DIR}/optional/include
     )
 endif()

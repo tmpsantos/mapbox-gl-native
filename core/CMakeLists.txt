@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
-project(MAPBOX_AUTO LANGUAGES CXX C)
+project(MBGL_CORE LANGUAGES CXX C)
 
 set(CMAKE_CONFIGURATION_TYPES Debug Release RelWithDebInfo MinSizeRel)
 
@@ -7,22 +7,20 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-# Compiler configuration
+cmake_policy(SET CMP0063 NEW)
+
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# Required to avoid warnings when setting visibility
-cmake_policy(SET CMP0063 NEW)
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(mbgl-core STATIC
     ${CMAKE_SOURCE_DIR}/include/mbgl/actor/actor.hpp
@@ -130,12 +128,10 @@ add_library(mbgl-core STATIC
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/layers/fill_layer.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/layers/heatmap_layer.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/layers/hillshade_layer.hpp
-    ${CMAKE_SOURCE_DIR}/include/mbgl/style/layers/layer.hpp.ejs
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/layers/line_layer.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/layers/raster_layer.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/layers/symbol_layer.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/light.hpp
-    ${CMAKE_SOURCE_DIR}/include/mbgl/style/light.hpp.ejs
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/position.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/property_expression.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/style/property_value.hpp
@@ -596,9 +592,6 @@ add_library(mbgl-core STATIC
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/hillshade_layer_impl.hpp
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/hillshade_layer_properties.cpp
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/hillshade_layer_properties.hpp
-    ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/layer.cpp.ejs
-    ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/layer_properties.cpp.ejs
-    ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/layer_properties.hpp.ejs
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/line_layer.cpp
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/line_layer_impl.cpp
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/line_layer_impl.hpp
@@ -616,7 +609,6 @@ add_library(mbgl-core STATIC
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/layers/symbol_layer_properties.hpp
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/layout_property.hpp
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/light.cpp
-    ${CMAKE_SOURCE_DIR}/src/mbgl/style/light.cpp.ejs
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/light_impl.cpp
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/light_impl.hpp
     ${CMAKE_SOURCE_DIR}/src/mbgl/style/light_observer.hpp
@@ -780,4 +772,49 @@ add_library(mbgl-core STATIC
     ${CMAKE_SOURCE_DIR}/src/mbgl/util/work_request.cpp
     ${CMAKE_SOURCE_DIR}/src/parsedate/parsedate.cpp
     ${CMAKE_SOURCE_DIR}/src/parsedate/parsedate.hpp
+)
+
+target_include_directories(mbgl-core
+    PRIVATE ${CMAKE_SOURCE_DIR}/include
+    PRIVATE ${CMAKE_SOURCE_DIR}/src
+)
+
+include(${CMAKE_SOURCE_DIR}/../vendor/boost.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/earcut.hpp.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/eternal.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/expected.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/geojson-vt-cpp.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/geojson.hpp.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/geometry.hpp.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/icu.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/kdbush.hpp.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/polylabel.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/protozero.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/rapidjson.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/shelf-pack-cpp.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/supercluster.hpp.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/unique_resource.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/variant.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/vector-tile.cmake)
+include(${CMAKE_SOURCE_DIR}/../vendor/wagyu.cmake)
+
+target_link_libraries(mbgl-core
+    PRIVATE boost
+    PRIVATE earcut.hpp
+    PRIVATE eternal
+    PRIVATE expected
+    PRIVATE geojson-vt-cpp
+    PRIVATE geojson.hpp
+    PRIVATE geometry.hpp
+    PRIVATE icu
+    PRIVATE kdbush.hpp
+    PRIVATE polylabel
+    PRIVATE protozero
+    PRIVATE rapidjson
+    PRIVATE shelf-pack-cpp
+    PRIVATE supercluster.hpp
+    PRIVATE unique_resource
+    PRIVATE variant
+    PRIVATE vector-tile
+    PRIVATE wagyu
 )

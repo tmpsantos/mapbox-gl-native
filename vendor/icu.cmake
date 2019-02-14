@@ -1,19 +1,19 @@
 add_library(icu STATIC
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/cmemory.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/cstring.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/ubidi.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/ubidi_props.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/ubidiln.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/ubidiwrt.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/uchar.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/udataswp.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/uinvchar.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/umath.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/ushape.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/ustring.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/utf_impl.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/utrie2.cpp
-    ${CMAKE_SOURCE_DIR}/vendor/icu/src/utypes.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/cmemory.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/cstring.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/ubidi.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/ubidi_props.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/ubidiln.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/ubidiwrt.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/uchar.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/udataswp.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/uinvchar.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/umath.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/ushape.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/ustring.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/utf_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/utrie2.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/icu/src/utypes.cpp
 )
 
 target_compile_definitions(icu PRIVATE
@@ -32,5 +32,5 @@ target_compile_options(icu PRIVATE
 )
 
 target_include_directories(icu SYSTEM PUBLIC
-    ${CMAKE_SOURCE_DIR}/vendor/icu/include
+    ${CMAKE_CURRENT_LIST_DIR}/icu/include
 )
