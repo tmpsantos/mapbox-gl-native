@@ -7,6 +7,9 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
+# FIXME: Get from git.
+set(MBGL_VERSION_REV 00000000)
+
 cmake_policy(SET CMP0063 NEW)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -22,7 +25,7 @@ set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_library(mbgl-core STATIC
+add_library(mbgl-core STATIC EXCLUDE_FROM_ALL
     ${CMAKE_SOURCE_DIR}/include/mbgl/actor/actor.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/actor/actor_ref.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/actor/aspiring_actor.hpp
@@ -52,6 +55,7 @@ add_library(mbgl-core STATIC
     ${CMAKE_SOURCE_DIR}/include/mbgl/math/log2.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/math/minmax.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/math/wrap.hpp
+    ${CMAKE_SOURCE_DIR}/include/mbgl/platform/background_scheduler.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/platform/gl_functions.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/renderer/backend_scope.hpp
     ${CMAKE_SOURCE_DIR}/include/mbgl/renderer/mode.hpp
@@ -774,6 +778,8 @@ add_library(mbgl-core STATIC
     ${CMAKE_SOURCE_DIR}/src/parsedate/parsedate.hpp
 )
 
+set_source_files_properties(${CMAKE_SOURCE_DIR}/src/mbgl/util/version.cpp PROPERTIES COMPILE_DEFINITIONS MBGL_VERSION_REV=${MBGL_VERSION_REV})
+
 target_include_directories(mbgl-core
     PRIVATE ${CMAKE_SOURCE_DIR}/include
     PRIVATE ${CMAKE_SOURCE_DIR}/src
@@ -818,3 +824,5 @@ target_link_libraries(mbgl-core
     PRIVATE vector-tile
     PRIVATE wagyu
 )
+
+add_library(MapboxGL::Core ALIAS mbgl-core)

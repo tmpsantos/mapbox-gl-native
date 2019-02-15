@@ -1,4 +1,4 @@
-add_library(icu STATIC
+add_library(icu STATIC EXCLUDE_FROM_ALL
     ${CMAKE_CURRENT_LIST_DIR}/icu/src/cmemory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/icu/src/cstring.cpp
     ${CMAKE_CURRENT_LIST_DIR}/icu/src/ubidi.cpp
