@@ -1,7 +1,7 @@
 #include <mbgl/platform/background_scheduler.hpp>
 
-#include <mbgl/actor/scheduler.hpp>
 #include <mbgl/actor/mailbox.hpp>
+#include <mbgl/actor/scheduler.hpp>
 #include <mbgl/util/platform.hpp>
 #include <mbgl/util/string.hpp>
 

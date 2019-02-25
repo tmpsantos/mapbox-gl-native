@@ -338,6 +338,7 @@
         "mbgl/math/wrap.hpp": "include/mbgl/math/wrap.hpp",
         "mbgl/platform/background_scheduler.hpp": "include/mbgl/platform/background_scheduler.hpp",
         "mbgl/platform/gl_functions.hpp": "include/mbgl/platform/gl_functions.hpp",
+        "mbgl/platform/platform.hpp": "include/mbgl/platform/platform.hpp",
         "mbgl/renderer/backend_scope.hpp": "include/mbgl/renderer/backend_scope.hpp",
         "mbgl/renderer/mode.hpp": "include/mbgl/renderer/mode.hpp",
         "mbgl/renderer/query.hpp": "include/mbgl/renderer/query.hpp",
