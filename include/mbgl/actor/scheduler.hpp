@@ -41,6 +41,10 @@ public:
     // Set/Get the current Scheduler for this thread
     static Scheduler* GetCurrent();
     static void SetCurrent(Scheduler*);
+
+    // Set/Get the background Scheduler, for asynchronous tasks.
+    static Scheduler* GetBackground();
+    static void SetBackground(Scheduler*);
 };
 
 } // namespace mbgl
