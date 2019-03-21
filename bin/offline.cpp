@@ -191,58 +191,6 @@ int main(int argc, char *argv[]) {
 
     OfflineRegionMetadata metadata;
 
-    class Observer : public OfflineRegionObserver {
-    public:
-        Observer(OfflineRegion& region_, DefaultFileSource& fileSource_, util::RunLoop& loop_, mbgl::optional<std::string> mergePath_)
-            : region(region_),
-              fileSource(fileSource_),
-              loop(loop_),
-              mergePath(mergePath_),
-              start(util::now()) {
-        }
-
-        void statusChanged(OfflineRegionStatus status) override {
-            if (status.downloadState == OfflineRegionDownloadState::Inactive) {
-                std::cout << "stopped" << std::endl;
-                loop.stop();
-                return;
-            }
-
-            std::string bytesPerSecond = "-";
-
-            auto elapsedSeconds = (util::now() - start) / 1s;
-            if (elapsedSeconds != 0) {
-                bytesPerSecond = util::toString(status.completedResourceSize / elapsedSeconds);
-            }
-
-            std::cout << status.completedResourceCount << " / " << status.requiredResourceCount
-                      << " resources"
-                      << (status.requiredResourceCountIsPrecise ? "; " : " (indeterminate); ")
-                      << status.completedResourceSize << " bytes downloaded"
-                      << " (" << bytesPerSecond << " bytes/sec)"
-                      << std::endl;
-
-            if (status.complete()) {
-                std::cout << "Finished Download" << std::endl;
-                loop.stop();
-            }
-        }
-
-        void responseError(Response::Error error) override {
-            std::cerr << error.reason << " downloading resource: " << error.message << std::endl;
-        }
-
-        void mapboxTileCountLimitExceeded(uint64_t limit) override {
-            std::cerr << "Error: reached limit of " << limit << " offline tiles" << std::endl;
-        }
-
-        OfflineRegion& region;
-        DefaultFileSource& fileSource;
-        util::RunLoop& loop;
-        mbgl::optional<std::string> mergePath;
-        Timestamp start;
-    };
-
     static auto stop = [&] {
         if (region) {
             std::cout << "Stopping download... ";
@@ -252,17 +200,11 @@ int main(int argc, char *argv[]) {
 
     std::signal(SIGINT, [] (int) { stop(); });
 
-    fileSource.createOfflineRegion(definition, metadata, [&] (mbgl::expected<OfflineRegion, std::exception_ptr> region_) {
-        if (!region_) {
-            std::cerr << "Error creating region: " << util::toString(region_.error()) << std::endl;
+    fileSource.listOfflineRegions([&](expected<OfflineRegions, std::exception_ptr> list) {
+        fileSource.getOfflineRegionStatus(list.value().at(0), [&](expected<OfflineRegionStatus, std::exception_ptr> list2) {
+            std::cout << list2.value().complete() << std::endl;
             loop.stop();
-            exit(1);
-        } else {
-            assert(region_);
-            region = std::make_unique<OfflineRegion>(std::move(*region_));
-            fileSource.setOfflineRegionObserver(*region, std::make_unique<Observer>(*region, fileSource, loop, mergePath));
-            fileSource.setOfflineRegionDownloadState(*region, OfflineRegionDownloadState::Active);
-        }
+        });
     });
 
     loop.run();
