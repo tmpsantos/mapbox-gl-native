@@ -132,18 +132,26 @@ int main(int argc, char *argv[]) {
 
     std::signal(SIGINT, [] (int) { stop(); });
 
-    fileSource.createOfflineRegion(definition, metadata, [&] (std::exception_ptr error, optional<OfflineRegion> region_) {
-        if (error) {
-            std::cerr << "Error creating region: " << util::toString(error) << std::endl;
+    //fileSource.createOfflineRegion(definition, metadata, [&] (std::exception_ptr error, optional<OfflineRegion> region_) {
+    //    if (error) {
+    //        std::cerr << "Error creating region: " << util::toString(error) << std::endl;
+    //        loop.stop();
+    //        exit(1);
+    //    } else {
+    //        assert(region_);
+    //        region = std::make_unique<OfflineRegion>(std::move(*region_));
+    //        fileSource.setOfflineRegionObserver(*region, std::make_unique<Observer>(*region, fileSource, loop));
+    //        fileSource.setOfflineRegionDownloadState(*region, OfflineRegionDownloadState::Active);
+    //    }
+    //});
+
+    fileSource.listOfflineRegions([&](std::exception_ptr, optional<std::vector<OfflineRegion>> regions) {
+        fileSource.getOfflineRegionStatus(regions.value().at(0), [&](std::exception_ptr, optional<OfflineRegionStatus> status) {
+            std::cout << status.value().complete() << std::endl;
             loop.stop();
-            exit(1);
-        } else {
-            assert(region_);
-            region = std::make_unique<OfflineRegion>(std::move(*region_));
-            fileSource.setOfflineRegionObserver(*region, std::make_unique<Observer>(*region, fileSource, loop));
-            fileSource.setOfflineRegionDownloadState(*region, OfflineRegionDownloadState::Active);
-        }
+        });
     });
+
 
     loop.run();
     return 0;
