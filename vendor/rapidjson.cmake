@@ -1,7 +1,7 @@
 add_library(rapidjson INTERFACE)
 
 target_include_directories(rapidjson SYSTEM INTERFACE
-    ${CMAKE_SOURCE_DIR}/vendor/rapidjson/include
+    ${CMAKE_CURRENT_LIST_DIR}/rapidjson/include
 )
 
 target_compile_definitions(rapidjson INTERFACE
