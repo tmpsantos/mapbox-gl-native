@@ -30,3 +30,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/core)
 add_subdirectory(${PROJECT_SOURCE_DIR}/platform/linux)
+add_subdirectory(${PROJECT_SOURCE_DIR}/platform/glfw)
