@@ -32,5 +32,6 @@ enable_testing()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/core)
 add_subdirectory(${PROJECT_SOURCE_DIR}/test)
+add_subdirectory(${PROJECT_SOURCE_DIR}/benchmark)
 add_subdirectory(${PROJECT_SOURCE_DIR}/platform/linux)
 add_subdirectory(${PROJECT_SOURCE_DIR}/platform/glfw)
