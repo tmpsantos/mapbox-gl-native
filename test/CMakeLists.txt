@@ -117,7 +117,7 @@ else()
         TARGET mbgl-test PRE_BUILD
         COMMAND ${MBGL_TEST_NPM} update
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    )   
+    )
 
     set(MBGL_TEST_HAS_TEST_SERVER 1)
 endif()
