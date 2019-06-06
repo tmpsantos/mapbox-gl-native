@@ -15,20 +15,6 @@ add_library(mbgl-core STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/line_atlas.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/attribute.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/renderer_backend.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/attribute.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/command_encoder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/context.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/debugging_extension.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/enum.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/object.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/offscreen_texture.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/render_pass.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/renderer_backend.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/texture.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/uniform.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/upload_pass.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/value.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gl/vertex_array.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layermanager/background_layer_factory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layermanager/circle_layer_factory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layermanager/custom_layer_factory.cpp
@@ -52,7 +38,6 @@ add_library(mbgl-core STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/transform.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/transform_state.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/math/log2.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/platform/gl_functions.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/background_program.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/circle_program.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/clipping_mask_program.cpp
@@ -60,33 +45,6 @@ add_library(mbgl-core STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/debug_program.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_extrusion_program.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_program.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/background.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/background_pattern.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/circle.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/clipping_mask.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/collision_box.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/collision_circle.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/debug.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/fill.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/fill_extrusion.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/fill_extrusion_pattern.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/fill_outline.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/fill_outline_pattern.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/fill_pattern.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/heatmap.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/heatmap_texture.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/hillshade.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/hillshade_prepare.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/line.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/line_gradient.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/line_pattern.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/line_sdf.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/raster.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/shader_source.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/shaders.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/symbol_icon.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/symbol_sdf_icon.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/gl/symbol_sdf_text.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/heatmap_program.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/heatmap_texture_program.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/hillshade_prepare_program.cpp
@@ -113,7 +71,6 @@ add_library(mbgl-core STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/image_manager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_background_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_circle_layer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_custom_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_fill_extrusion_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_fill_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_heatmap_layer.cpp

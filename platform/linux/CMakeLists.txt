@@ -106,10 +106,3 @@ target_link_libraries(mbgl-benchmark-linux PRIVATE
 
 add_test(NAME mbgl-benchmark-linux COMMAND mbgl-benchmark-linux WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_test(NAME mbgl-test-linux COMMAND mbgl-test-linux)
-
-# FIXME: Usage or not of GLES2 should go to OpenGL GFX backend,
-# now this is wrong because it is configuring a target that does
-# not belong to this file.
-target_compile_definitions(mbgl-core PRIVATE MBGL_USE_GLES2)
-target_compile_definitions(mbgl-test PRIVATE MBGL_USE_GLES2)
-target_compile_definitions(mbgl-platform-linux PRIVATE MBGL_USE_GLES2)
