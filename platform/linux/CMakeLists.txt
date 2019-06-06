@@ -44,6 +44,11 @@ add_library(mbgl-platform-linux STATIC
     ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/util/utf.cpp
 )
 
+# FIXME: Disabling because of a circular linking dependency
+target_compile_definitions(mbgl-platform-linux PRIVATE
+    MBGL_LAYER_CUSTOM_DISABLE_ALL
+)
+
 target_include_directories(mbgl-platform-linux PRIVATE
     ${CURL_INCLUDE_DIRS}
     ${EGL_INCLUDE_DIRS}
@@ -100,7 +105,9 @@ add_executable(mbgl-benchmark-linux
 )
 
 target_link_libraries(mbgl-benchmark-linux PRIVATE
+    Mapbox::Maps::Core
     Mapbox::Maps::Platform
+    Mapbox::Maps::GFX
     Mapbox::Maps::Benchmark
 )
 
