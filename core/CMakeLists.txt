@@ -1,20 +1,235 @@
 add_library(mbgl-core STATIC
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/actor/actor.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/actor/actor_ref.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/actor/aspiring_actor.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/actor/established_actor.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/actor/mailbox.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/actor/message.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/actor/scheduler.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/annotation/annotation.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/gfx/backend.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/gfx/backend_scope.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/gfx/renderable.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/gfx/renderer_backend.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/background_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/circle_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/custom_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/fill_extrusion_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/fill_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/heatmap_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/hillshade_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/layer_manager.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/line_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/raster_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/layermanager/symbol_layer_factory.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/map/bound_options.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/map/camera.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/map/change.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/map/map.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/map/map_observer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/map/map_options.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/map/mode.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/map/projection_mode.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/math/clamp.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/math/log2.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/math/minmax.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/math/wrap.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/platform/thread.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/renderer/query.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/renderer/renderer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/renderer/renderer_frontend.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/renderer/renderer_observer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/renderer/renderer_state.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/default_file_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/file_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/network_status.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/offline.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/online_file_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/resource.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/resource_options.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/resource_transform.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/storage/response.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/color_ramp_property_value.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/color_ramp_property_value.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/constant.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/coordinate.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/custom_geometry_source_options.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/filter.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/function.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/geojson.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/geojson_options.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/get_json_type.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/light.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/position.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/property_value.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/tileset.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion/transition_options.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/conversion_impl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/assertion.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/at.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/boolean_operator.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/case.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/check_subtype.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/coalesce.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/coercion.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/collator.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/collator_expression.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/comparison.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/compound_expression.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/dsl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/error.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/expression.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/find_zoom_curve.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/format_expression.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/format_section_override.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/formatted.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/get_covering_stops.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/interpolate.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/interpolator.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/is_constant.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/is_expression.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/length.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/let.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/literal.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/match.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/number_format.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/parsing_context.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/step.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/type.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/expression/value.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/filter.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/image.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layer_properties.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/background_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/circle_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/custom_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/fill_extrusion_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/fill_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/heatmap_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/hillshade_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/line_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/raster_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/layers/symbol_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/light.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/position.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/property_expression.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/property_value.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/sources/custom_geometry_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/sources/geojson_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/sources/image_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/sources/raster_dem_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/sources/raster_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/sources/vector_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/style.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/transition_options.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/types.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/style/undefined.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/tile/tile_id.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/tile/tile_necessity.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/async_request.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/async_task.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/char_array_buffer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/chrono.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/color.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/compression.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/constants.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/convert.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/enum.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/event.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/exception.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/expected.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/feature.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/font_stack.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/geo.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/geojson.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/geometry.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/ignore.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/image.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/immutable.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/indexed_tuple.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/interpolate.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/logging.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/noncopyable.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/optional.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/peer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/platform.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/premultiply.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/projection.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/range.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/run_loop.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/size.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/string.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/thread.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/tileset.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/timer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/traits.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/type_list.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/unitbezier.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/util.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/variant.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/work_request.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/work_task.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/mbgl/util/work_task_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/csscolorparser/csscolorparser.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/csscolorparser/csscolorparser.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/actor/mailbox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/actor/scheduler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/algorithm/update_renderables.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/algorithm/update_tile_masks.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/annotation_manager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/annotation_manager.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/annotation_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/annotation_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/annotation_tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/annotation_tile.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/fill_annotation_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/fill_annotation_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/line_annotation_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/line_annotation_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/render_annotation_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/render_annotation_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/shape_annotation_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/shape_annotation_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/symbol_annotation_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/annotation/symbol_annotation_impl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/anchor.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/debug_font_data.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/dem_data.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/dem_data.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/feature_index.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/feature_index.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/line_atlas.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/geometry/line_atlas.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/attribute.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/attribute.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/color_mode.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/command_encoder.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/context.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/cull_face_mode.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/debug_group.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/depth_mode.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/draw_mode.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/draw_scope.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/index_buffer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/index_vector.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/offscreen_texture.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/render_pass.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/renderbuffer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/renderer_backend.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/stencil_mode.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/texture.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/types.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/uniform.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/upload_pass.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/vertex_buffer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/gfx/vertex_vector.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layermanager/background_layer_factory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layermanager/circle_layer_factory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layermanager/custom_layer_factory.cpp
@@ -28,84 +243,198 @@ add_library(mbgl-core STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layermanager/raster_layer_factory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layermanager/symbol_layer_factory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/clip_lines.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/clip_lines.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/layout.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/merge_lines.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/merge_lines.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/pattern_layout.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/symbol_feature.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/symbol_instance.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/symbol_instance.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/symbol_layout.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/symbol_layout.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/symbol_projection.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/layout/symbol_projection.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/map.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/map_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/map_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/map_options.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/transform.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/transform.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/transform_state.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/transform_state.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/map/zoom_history.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/math/log2.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/attributes.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/background_pattern_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/background_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/background_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/circle_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/circle_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/clipping_mask_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/clipping_mask_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/collision_box_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/collision_box_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/collision_circle_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/debug_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/debug_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_extrusion_pattern_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_extrusion_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_extrusion_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_outline_pattern_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_outline_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_pattern_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/fill_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/heatmap_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/heatmap_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/heatmap_texture_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/heatmap_texture_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/hillshade_prepare_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/hillshade_prepare_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/hillshade_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/hillshade_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/line_gradient_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/line_pattern_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/line_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/line_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/line_sdf_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/program_parameters.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/program_parameters.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/programs.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/programs.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/raster_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/raster_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/segment.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/symbol_icon_program.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/symbol_program.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/symbol_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/symbol_sdf_icon_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/symbol_sdf_text_program.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/textures.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/programs/uniforms.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/backend_scope.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/bucket_parameters.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/bucket_parameters.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/circle_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/circle_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/debug_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/debug_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/fill_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/fill_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/fill_extrusion_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/fill_extrusion_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/heatmap_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/heatmap_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/hillshade_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/hillshade_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/line_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/line_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/raster_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/raster_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/symbol_bucket.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/buckets/symbol_bucket.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/cross_faded_property_evaluator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/cross_faded_property_evaluator.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/data_driven_property_evaluator.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/group_by_layout.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/group_by_layout.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/image_atlas.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/image_atlas.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/image_manager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/image_manager.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/image_manager_observer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_background_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_background_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_circle_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_circle_layer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_custom_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_fill_extrusion_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_fill_extrusion_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_fill_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_fill_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_heatmap_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_heatmap_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_hillshade_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_hillshade_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_line_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_line_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_raster_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_raster_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_symbol_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/layers/render_symbol_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/paint_parameters.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/paint_parameters.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/paint_property_binder.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/paint_property_statistics.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/pattern_atlas.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/pattern_atlas.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/possibly_evaluated_property_value.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/property_evaluation_parameters.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/property_evaluator.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_layer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_layer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_light.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_light.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_orchestrator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_orchestrator.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_pass.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_source_observer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_static_data.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_static_data.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_tile.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/render_tree.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/renderer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/renderer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/renderer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/renderer_state.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_custom_geometry_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_custom_geometry_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_geojson_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_geojson_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_image_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_image_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_raster_dem_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_raster_dem_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_raster_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_raster_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_tile_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_tile_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_vector_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/sources/render_vector_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/style_diff.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/style_diff.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/tile_mask.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/tile_parameters.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/tile_pyramid.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/tile_pyramid.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/tile_render_data.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/tile_render_data.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/transition_parameters.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/update_parameters.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/renderer/upload_parameters.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/sprite/sprite_loader.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/sprite/sprite_loader.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/sprite/sprite_loader_observer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/sprite/sprite_loader_worker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/sprite/sprite_loader_worker.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/sprite/sprite_parser.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/sprite/sprite_parser.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/asset_file_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/file_source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/http_file_source.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/local_file_source.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/network_status.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/resource.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/resource_options.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/resource_transform.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/storage/response.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/collection.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/color_ramp_property_value.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/constant.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/coordinate.cpp
@@ -115,14 +444,17 @@ add_library(mbgl-core STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/geojson.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/geojson_options.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/get_json_type.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/json.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/light.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/position.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/property_value.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/source.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/stringify.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/tileset.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/conversion/transition_options.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/custom_tile_loader.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/custom_tile_loader.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/assertion.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/at.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/boolean_operator.cpp
@@ -134,6 +466,7 @@ add_library(mbgl-core STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/comparison.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/compound_expression.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/dsl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/dsl_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/expression.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/find_zoom_curve.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/format_expression.cpp
@@ -146,128 +479,235 @@ add_library(mbgl-core STATIC
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/let.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/literal.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/match.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/number_format.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/parsing_context.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/step.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/util.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/util.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/expression/value.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/filter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/image.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/image_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/image_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layer_impl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layer_observer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/background_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/background_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/background_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/background_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/background_layer_properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/circle_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/circle_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/circle_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/circle_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/circle_layer_properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/custom_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/custom_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/custom_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_extrusion_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_extrusion_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_extrusion_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_extrusion_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_extrusion_layer_properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/fill_layer_properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/heatmap_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/heatmap_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/heatmap_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/heatmap_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/heatmap_layer_properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/hillshade_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/hillshade_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/hillshade_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/hillshade_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/hillshade_layer_properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/line_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/line_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/line_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/line_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/line_layer_properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/raster_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/raster_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/raster_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/raster_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/raster_layer_properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/symbol_layer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/symbol_layer_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/symbol_layer_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/symbol_layer_properties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layers/symbol_layer_properties.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/layout_property.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/light.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/light_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/light_impl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/light_observer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/observer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/paint_property.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/parser.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/parser.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/properties.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/property_expression.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/rapidjson_conversion.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/source.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/source_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/source_impl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/source_observer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/custom_geometry_source.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/custom_geometry_source_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/custom_geometry_source_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/geojson_source.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/geojson_source_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/geojson_source_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/image_source.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/image_source_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/image_source_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/raster_dem_source.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/raster_source.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/raster_source_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/raster_source_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/vector_source.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/vector_source_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/sources/vector_source_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/style.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/style_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/style_impl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/style/types.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/bidi.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/check_max_angle.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/check_max_angle.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/collision_feature.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/collision_feature.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/collision_index.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/collision_index.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/cross_tile_symbol_index.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/cross_tile_symbol_index.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/get_anchors.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/get_anchors.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph_atlas.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph_atlas.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph_manager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph_manager.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph_manager_observer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph_pbf.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph_pbf.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/glyph_range.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/language_tag.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/language_tag.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/local_glyph_rasterizer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/placement.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/placement.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/quads.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/quads.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/shaping.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/shaping.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/tagged_string.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/text/tagged_string.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/custom_geometry_tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/custom_geometry_tile.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geojson_tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geojson_tile.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geojson_tile_data.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geometry_tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geometry_tile.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geometry_tile_data.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geometry_tile_data.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geometry_tile_worker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/geometry_tile_worker.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/raster_dem_tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/raster_dem_tile.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/raster_dem_tile_worker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/raster_dem_tile_worker.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/raster_tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/raster_tile.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/raster_tile_worker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/raster_tile_worker.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile_cache.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile_cache.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile_id_hash.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile_id_io.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile_loader.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile_loader_impl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/tile_observer.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/vector_tile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/vector_tile.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/vector_tile_data.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/tile/vector_tile_data.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/chrono.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/color.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/compression.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/constants.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/convert.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/dtoa.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/dtoa.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/event.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/font_stack.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/geo.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/geojson_impl.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/grid_index.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/grid_index.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/hash.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/http_header.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/http_header.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/http_timeout.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/http_timeout.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/i18n.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/i18n.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/id.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/id.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/interpolate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/intersection_tests.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/intersection_tests.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/io.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/io.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/literal.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/logging.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/longest_common_subsequence.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/mapbox.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/mapbox.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/mat2.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/mat2.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/mat3.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/mat3.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/mat4.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/mat4.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/math.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/premultiply.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/rapidjson.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/rapidjson.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/rect.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/std.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/stopwatch.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/stopwatch.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/string.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/thread_local.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/thread_pool.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/thread_pool.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/tile_coordinate.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/tile_cover.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/tile_cover.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/tile_cover_impl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/tile_cover_impl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/tile_range.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/tiny_sdf.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/tiny_sdf.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/token.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/url.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/url.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/utf.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/version.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/version.hpp
     ${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/work_request.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/parsedate/parsedate.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/parsedate/parsedate.hpp
 )
 
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/src/mbgl/util/version.cpp
@@ -289,6 +729,7 @@ include(${PROJECT_SOURCE_DIR}/vendor/geojson-vt-cpp.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/geojson.hpp.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/geometry.hpp.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/kdbush.hpp.cmake)
+include(${PROJECT_SOURCE_DIR}/vendor/optional.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/polylabel.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/protozero.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/rapidjson.cmake)
@@ -317,6 +758,7 @@ target_link_libraries(mbgl-core PUBLIC
     expected
     geojson.hpp
     geometry.hpp
+    optional
     protozero
     rapidjson
     shelf-pack-cpp

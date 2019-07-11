@@ -9,9 +9,9 @@ add_library(gtest STATIC
 )
 
 target_include_directories(gtest PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/deps/gtest/gtest/include
+    ${CMAKE_CURRENT_LIST_DIR}/gtest/include
 )
 
 target_include_directories(gtest SYSTEM INTERFACE
-    ${CMAKE_CURRENT_LIST_DIR}/deps/gtest/gtest/include
+    ${CMAKE_CURRENT_LIST_DIR}/gtest/include
 )

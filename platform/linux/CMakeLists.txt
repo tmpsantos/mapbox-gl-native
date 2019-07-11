@@ -31,6 +31,7 @@ add_library(mbgl-platform-linux STATIC
     ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/text/local_glyph_rasterizer.cpp
     ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/text/unaccent.cpp
     ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/util/async_task.cpp
+    ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/util/format_number.cpp
     ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/util/image.cpp
     ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/util/jpeg_reader.cpp
     ${PROJECT_SOURCE_DIR}/platform/default/src/mbgl/util/logging_stderr.cpp
@@ -63,6 +64,7 @@ target_include_directories(mbgl-platform-linux PUBLIC
     ${PROJECT_SOURCE_DIR}/platform/default/include
 )
 
+include(${PROJECT_SOURCE_DIR}/vendor/boost.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/icu.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/nunicode.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/sqlite.cmake)
@@ -77,6 +79,7 @@ target_link_libraries(mbgl-platform-linux PRIVATE
     Mapbox::Maps::Core
     Mapbox::Maps::GFX
     PNG::PNG
+    boost
     icu
     nunicode
     pthread
