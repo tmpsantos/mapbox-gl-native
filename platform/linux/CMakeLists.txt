@@ -1,7 +1,8 @@
+find_package(CURL REQUIRED)
+find_package(ICU REQUIRED i18n)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(CURL REQUIRED)
 
 pkg_search_module(GLES glesv2 REQUIRED)
 pkg_search_module(EGL egl REQUIRED)
@@ -65,7 +66,6 @@ target_include_directories(mbgl-platform-linux PUBLIC
 )
 
 include(${PROJECT_SOURCE_DIR}/vendor/boost.cmake)
-include(${PROJECT_SOURCE_DIR}/vendor/icu.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/nunicode.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/sqlite.cmake)
 
@@ -76,11 +76,11 @@ target_link_libraries(mbgl-platform-linux PRIVATE
     ${GLES_LIBRARIES}
     ${JPEG_LIBRARIES}
     ${LIBUV_LIBRARIES}
+    ICU::i18n
     Mapbox::Maps::Core
     Mapbox::Maps::GFX
     PNG::PNG
     boost
-    icu
     nunicode
     pthread
     sqlite
