@@ -2,7 +2,7 @@ if(__ARGS_CMAKE__)
     return()
 endif()
 
-set(__ARGS_CMAKE__ TRUE PARENT_SCOPE)
+set(__ARGS_CMAKE__ TRUE)
 
 add_library(args INTERFACE)
 

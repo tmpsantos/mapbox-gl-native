@@ -2,7 +2,7 @@ if(__SQLITE_CMAKE__)
     return()
 endif()
 
-set(__SQLITE_CMAKE__ TRUE PARENT_SCOPE)
+set(__SQLITE_CMAKE__ TRUE)
 
 add_library(sqlite STATIC
     ${CMAKE_CURRENT_LIST_DIR}/sqlite/src/sqlite3.c

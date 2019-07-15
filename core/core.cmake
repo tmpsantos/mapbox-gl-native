@@ -766,5 +766,3 @@ target_link_libraries(mbgl-core PUBLIC
     variant
     vector-tile
 )
-
-add_library(Mapbox::Maps::Core ALIAS mbgl-core)

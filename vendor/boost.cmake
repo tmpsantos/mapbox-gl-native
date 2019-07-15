@@ -2,7 +2,7 @@ if(__BOOST_CMAKE__)
     return()
 endif()
 
-set(__BOOST_CMAKE__ TRUE PARENT_SCOPE)
+set(__BOOST_CMAKE__ TRUE)
 
 add_library(boost INTERFACE)
 

@@ -30,8 +30,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 enable_testing()
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/core)
+include(${PROJECT_SOURCE_DIR}/core/core.cmake)
+include(${PROJECT_SOURCE_DIR}/gfx/gl/gl.cmake)
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/test)
 add_subdirectory(${PROJECT_SOURCE_DIR}/benchmark)
-add_subdirectory(${PROJECT_SOURCE_DIR}/platform/linux)
 add_subdirectory(${PROJECT_SOURCE_DIR}/platform/glfw)
+
+include(${PROJECT_SOURCE_DIR}/platform/linux/linux.cmake)
+
+add_library(Mapbox::Maps::Core ALIAS mbgl-core)

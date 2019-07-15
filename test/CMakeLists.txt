@@ -137,16 +137,12 @@ target_include_directories(mbgl-test PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/include
 )
 
-include(${PROJECT_SOURCE_DIR}/vendor/args.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/boost.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/gtest.cmake)
 include(${PROJECT_SOURCE_DIR}/vendor/pixelmatch-cpp.cmake)
-include(${PROJECT_SOURCE_DIR}/vendor/sqlite.cmake)
 
 target_link_libraries(mbgl-test PRIVATE
     Mapbox::Maps::Core
-    Mapbox::Maps::Platform
-    args
     boost
     gtest
     pixelmatch-cpp

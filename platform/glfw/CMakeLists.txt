@@ -20,7 +20,6 @@ include(${PROJECT_SOURCE_DIR}/vendor/cheap-ruler-cpp.cmake)
 target_link_libraries(mbgl-glfw PRIVATE
     ${GLFW_LIBRARIES}
     Mapbox::Maps::Core
-    Mapbox::Maps::Platform
     args
     cheap-ruler-cpp
 )
