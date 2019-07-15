@@ -26,7 +26,6 @@ include(${PROJECT_SOURCE_DIR}/vendor/benchmark.cmake)
 target_link_libraries(mbgl-benchmark PRIVATE
     Mapbox::Maps::Core
     Mapbox::Maps::Platform
-    Mapbox::Maps::GFX
     benchmark
 )
 

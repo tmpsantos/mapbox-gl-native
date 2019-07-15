@@ -146,7 +146,6 @@ include(${PROJECT_SOURCE_DIR}/vendor/sqlite.cmake)
 target_link_libraries(mbgl-test PRIVATE
     Mapbox::Maps::Core
     Mapbox::Maps::Platform
-    Mapbox::Maps::GFX
     args
     boost
     gtest
