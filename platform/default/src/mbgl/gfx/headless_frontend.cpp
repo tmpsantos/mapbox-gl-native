@@ -7,8 +7,6 @@
 #include <mbgl/map/transform_state.hpp>
 #include <mbgl/util/run_loop.hpp>
 
-#include <iostream>
-
 namespace mbgl {
 
 HeadlessFrontend::HeadlessFrontend(float pixelRatio_,
@@ -146,15 +144,10 @@ PremultipliedImage HeadlessFrontend::render(Map& map) {
         util::RunLoop::Get()->runOnce();
     }
 
-    try {
-        if (error) {
-            std::rethrow_exception(error);
-        }
+    if (error) {
+        std::rethrow_exception(error);
     }
-    catch (const std::exception& e) {
-        std::cerr <<e.what() << std::endl;
-    }
-      
+
     return result;
 }
 

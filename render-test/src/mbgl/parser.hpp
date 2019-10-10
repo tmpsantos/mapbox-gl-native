@@ -2,14 +2,14 @@
 
 #include "metadata.hpp"
 
+#include <mbgl/util/optional.hpp>
 #include <mbgl/util/rapidjson.hpp>
 #include <mbgl/util/variant.hpp>
-#include <mbgl/util/optional.hpp>
 
-#include <tuple>
-#include <string>
-#include <vector>
 #include <regex>
+#include <string>
+#include <tuple>
+#include <vector>
 
 using ErrorMessage = std::string;
 using JSONReply = mbgl::variant<mbgl::JSDocument, ErrorMessage>;

@@ -37,7 +37,7 @@ void operator delete(void* ptr, size_t) noexcept {
 }
 #endif
 
-namespace mbgl{
+namespace mbgl {
 
 int runRenderTests(int argc, char* argv[]) {
     bool recycleMap;
@@ -46,9 +46,9 @@ int runRenderTests(int argc, char* argv[]) {
     std::string testRootPath;
     std::vector<TestPaths> testPaths;
 
-    std::tie(recycleMap, shuffle, seed, testRootPath,testPaths) = parseArguments(argc, argv);
+    std::tie(recycleMap, shuffle, seed, testRootPath, testPaths) = parseArguments(argc, argv);
     const std::string::size_type rootLength = testRootPath.length();
-    
+
     const auto ignores = parseIgnores(testRootPath);
 
     if (shuffle) {
@@ -77,7 +77,9 @@ int runRenderTests(int argc, char* argv[]) {
         std::string& id = metadata.id;
         std::string& status = metadata.status;
         std::string& color = metadata.color;
-
+#ifdef __ANDROID__
+    metadata.allowed = 0.0009;
+#endif
         id = testPath.defaultExpectations();
         id = id.substr(rootLength + 1, id.length() - rootLength - 2);
 

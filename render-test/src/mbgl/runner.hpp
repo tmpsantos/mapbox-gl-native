@@ -14,7 +14,6 @@ public:
 
     bool run(TestMetadata&);
     void reset();
-    const std::string& getRootPath() const;
 
 private:
     bool runOperations(const std::string& key, TestMetadata&);

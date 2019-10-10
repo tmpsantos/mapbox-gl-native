@@ -610,8 +610,7 @@ run-android-render-test-$1-%: android-render-test-$1
 	# Run render tests.
 	adb shell "export LD_LIBRARY_PATH=$(MBGL_ANDROID_LOCAL_RENDER_DIR) && cd $(MBGL_ANDROID_LOCAL_RENDER_DIR) && chmod +x mbgl-render-test && ./mbgl-render-test --class_path=$(MBGL_ANDROID_LOCAL_RENDER_DIR)/classes.dex --rootPath=$(MBGL_ANDROID_LOCAL_RENDER_DIR)"
 
-	# Pull results.json from the device
-	rm $(MBGL_ANDROID_RENDER_DIR)/index.html
+	# Pull index.html from the device
 	adb pull $(MBGL_ANDROID_LOCAL_RENDER_DIR)/index.html $(MBGL_ANDROID_RENDER_DIR) > /dev/null 2>&1
 
 # Run the test app on connected android device with specified abi

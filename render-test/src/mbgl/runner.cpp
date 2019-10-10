@@ -199,11 +199,7 @@ std::string simpleDiff(const Value& result, const Value& expected) {
     return diff.str();
 }
 
-TestRunner::TestRunner(const std::string& rootPath_) : rootPath(rootPath_){}
-
-const std::string& TestRunner::getRootPath() const {
-    return rootPath;
-}
+TestRunner::TestRunner(const std::string& rootPath_) : rootPath(rootPath_) {}
 
 bool TestRunner::checkQueryTestResults(mbgl::PremultipliedImage&& actualImage,
                                        std::vector<mbgl::Feature>&& features,
@@ -477,6 +473,10 @@ bool TestRunner::runOperations(const std::string& key, TestMetadata& metadata) {
             metadata.errorMessage = ss.str();
             return false;
         }
+<<<<<<< HEAD
+=======
+        // sleep
+>>>>>>> remove redundant code
     } else if (operationArray[0].GetString() == sleepOp) {
         // sleep
         mbgl::util::Timer sleepTimer;
@@ -549,6 +549,11 @@ bool TestRunner::runOperations(const std::string& key, TestMetadata& metadata) {
             localizeStyleURLs(operationArray[1], metadata.document, rootPath);
             map.getStyle().loadJSON(serializeJsonValue(operationArray[1]));
         }
+<<<<<<< HEAD
+=======
+
+        // setCenter
+>>>>>>> remove redundant code
     } else if (operationArray[0].GetString() == setCenterOp) {
         // setCenter
         assert(operationArray.Size() >= 2u);
@@ -942,7 +947,7 @@ bool TestRunner::run(TestMetadata& metadata) {
             ss << "Run operatoin failed in line \"" << 896 ;
 
             metadata.errorMessage = ss.str();
-        return false;
+            return false;
     }
 
     mbgl::PremultipliedImage image;

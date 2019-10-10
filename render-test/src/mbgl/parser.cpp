@@ -95,7 +95,10 @@ std::string prependFileScheme(const std::string &url) {
     return fileScheme + url;
 }
 
-mbgl::optional<std::string> getVendorPath(const std::string& url, const std::regex& regex, const std::string& rootPath, bool glyphsPath = false) {
+mbgl::optional<std::string> getVendorPath(const std::string& url,
+                                          const std::regex& regex,
+                                          const std::string& rootPath,
+                                          bool glyphsPath = false) {
     static const mbgl::filesystem::path vendorPath(rootPath + "/vendor/");
 
     mbgl::filesystem::path file = std::regex_replace(url, regex, vendorPath.string());
@@ -110,7 +113,11 @@ mbgl::optional<std::string> getVendorPath(const std::string& url, const std::reg
     return {};
 }
 
-mbgl::optional<std::string> getIntegrationPath(const std::string& url, const std::string& parent, const std::regex& regex, const std::string& rootPath, bool glyphsPath = false) {
+mbgl::optional<std::string> getIntegrationPath(const std::string& url,
+                                               const std::string& parent,
+                                               const std::regex& regex,
+                                               const std::string& rootPath,
+                                               bool glyphsPath = false) {
     static const mbgl::filesystem::path integrationPath(rootPath + "/mapbox-gl-js/test/integration/");
 
     mbgl::filesystem::path file = std::regex_replace(url, regex, integrationPath.string() + parent);
@@ -125,7 +132,9 @@ mbgl::optional<std::string> getIntegrationPath(const std::string& url, const std
     return {};
 }
 
-mbgl::optional<std::string> localizeLocalURL(const std::string& url, const std::string& rootPath, bool glyphsPath = false) {
+mbgl::optional<std::string> localizeLocalURL(const std::string& url,
+                                             const std::string& rootPath,
+                                             bool glyphsPath = false) {
     static const std::regex regex { "local://" };
     if (auto vendorPath = getVendorPath(url, regex, rootPath, glyphsPath)) {
         return vendorPath;
@@ -167,11 +176,13 @@ mbgl::optional<std::string> localizeMapboxTilesetURL(const std::string& url, con
     return getIntegrationPath(url, "tilesets/", regex, rootPath);
 }
 
-TestPaths makeTestPaths(mbgl::filesystem::path stylePath, const mbgl::filesystem::path& testBasePath, const std::vector<std::string>& platformExpectationPaths) {
+TestPaths makeTestPaths(mbgl::filesystem::path stylePath,
+                        const mbgl::filesystem::path& testBasePath,
+                        const std::vector<std::string>& platformExpectationPaths) {
     std::vector<mbgl::filesystem::path> expectations{ stylePath };
     expectations.front().remove_filename();
 
-    const static std::regex regex{ testBasePath.string() };
+    const static std::regex regex{testBasePath.string()};
     for (const std::string& path : platformExpectationPaths) {
         expectations.emplace_back(std::regex_replace(expectations.front().string(), regex, path));
         assert(!expectations.back().empty());
@@ -340,9 +351,7 @@ const std::string& getBasePath(const std::string& rootPath) {
 
 const std::vector<std::string>& getPlatformExpectationsPaths(const std::string& rootPath) {
     // TODO: Populate from command line.
-    const static std::vector<std::string> result {
-        std::string(rootPath).append("/render-test/expected")
-    };
+    const static std::vector<std::string> result{std::string(rootPath).append("/render-test/expected")};
     return result;
 >>>>>>> [core] make render test runner run on android:render-test/src/mbgl/parser.cpp
 }
@@ -358,8 +367,7 @@ ArgumentsTuple parseArguments(int argc, char** argv) {
                            { 's', "shuffle" });
     args::ValueFlag<uint32_t> seedValue(argumentParser, "seed", "Shuffle seed (default: random)",
                                         { "seed" });
-    args::ValueFlag<std::string> testRootPathValue(argumentParser, "rootPath", "Test root rootPath",
-                                               { 'p', "rootPath" });
+    args::ValueFlag<std::string> testRootPathValue(argumentParser, "rootPath", "Test root rootPath", {'p', "rootPath"});
     args::ValueFlag<std::regex> testFilterValue(argumentParser, "filter", "Test filter regex",
                                                { 'f', "filter" });
     args::PositionalList<std::string> testNameValues(argumentParser, "URL", "Test name(s)");
@@ -388,13 +396,14 @@ ArgumentsTuple parseArguments(int argc, char** argv) {
         exit(3);
     }
 
-    mbgl::filesystem::path rootPath{testRootPathValue ? args::get(testRootPathValue) : std::string(TEST_RUNNER_ROOT_PATH)};
+    mbgl::filesystem::path rootPath{testRootPathValue ? args::get(testRootPathValue)
+                                                      : std::string(TEST_RUNNER_ROOT_PATH)};
     if (!mbgl::filesystem::exists(rootPath)) {
         mbgl::Log::Error(mbgl::Event::General, "Provided rootPath '%s' does not exist.", rootPath.string().c_str());
         exit(4);
     }
 
-    mbgl::filesystem::path basePath {getBasePath(rootPath.string())};
+    mbgl::filesystem::path basePath{getBasePath(rootPath.string())};
     std::vector<mbgl::filesystem::path> paths;
     for (const auto& id : args::get(testNameValues)) {
         paths.emplace_back(basePath.string() + "/" + id);
@@ -418,17 +427,17 @@ ArgumentsTuple parseArguments(int argc, char** argv) {
                 continue;
             }
             if (testPath.path().filename() == "style.json") {
-                testPaths.emplace_back(makeTestPaths(testPath, basePath, getPlatformExpectationsPaths(rootPath.string())));
+                testPaths.emplace_back(
+                    makeTestPaths(testPath, basePath, getPlatformExpectationsPaths(rootPath.string())));
             }
         }
     }
 
-    return ArgumentsTuple {
-        recycleMapFlag ? args::get(recycleMapFlag) : false,
-        shuffleFlag ? args::get(shuffleFlag) : false, seedValue ? args::get(seedValue) : 1u,
-        rootPath,
-        std::move(testPaths)
-    };
+    return ArgumentsTuple{recycleMapFlag ? args::get(recycleMapFlag) : false,
+                          shuffleFlag ? args::get(shuffleFlag) : false,
+                          seedValue ? args::get(seedValue) : 1u,
+                          rootPath,
+                          std::move(testPaths)};
 }
 
 std::vector<std::pair<std::string, std::string>> parseIgnores(const std::string& testRootPath) {
@@ -793,9 +802,9 @@ std::string localizeURL(const std::string& url, const std::string& rootPath) {
 void localizeSourceURLs(mbgl::JSValue& root, mbgl::JSDocument& document, const std::string& rootPath) {
     if (root.HasMember("urls") && root["urls"].IsArray()) {
         for (auto& urlValue : root["urls"].GetArray()) {
-            const std::string path = prependFileScheme(localizeMapboxTilesetURL(urlValue.GetString(), rootPath)
-                .value_or(localizeLocalURL(urlValue.GetString(), rootPath)
-                    .value_or(urlValue.GetString())));
+            const std::string path = prependFileScheme(
+                localizeMapboxTilesetURL(urlValue.GetString(), rootPath)
+                    .value_or(localizeLocalURL(urlValue.GetString(), rootPath).value_or(urlValue.GetString())));
             urlValue.Set<std::string>(path, document.GetAllocator());
         }
     }
@@ -805,9 +814,9 @@ void localizeSourceURLs(mbgl::JSValue& root, mbgl::JSDocument& document, const s
         static const std::string video("video");
 
         mbgl::JSValue& urlValue = root["url"];
-        const std::string path = prependFileScheme(localizeMapboxTilesetURL(urlValue.GetString(), rootPath)
-            .value_or(localizeLocalURL(urlValue.GetString(), rootPath)
-                .value_or(urlValue.GetString())));
+        const std::string path = prependFileScheme(
+            localizeMapboxTilesetURL(urlValue.GetString(), rootPath)
+                .value_or(localizeLocalURL(urlValue.GetString(), rootPath).value_or(urlValue.GetString())));
         urlValue.Set<std::string>(path, document.GetAllocator());
 
         if (root["type"].GetString() != image && root["type"].GetString() != video) {
@@ -826,18 +835,19 @@ void localizeSourceURLs(mbgl::JSValue& root, mbgl::JSDocument& document, const s
         mbgl::JSValue& tilesValue = root["tiles"];
         assert(tilesValue.IsArray());
         for (auto& tileValue : tilesValue.GetArray()) {
-            const std::string path = prependFileScheme(localizeMapboxTilesURL(tileValue.GetString(), rootPath)
-                .value_or(localizeLocalURL(tileValue.GetString(), rootPath)
-                    .value_or(localizeHttpURL(tileValue.GetString(), rootPath)
-                        .value_or(tileValue.GetString()))));
+            const std::string path =
+                prependFileScheme(localizeMapboxTilesURL(tileValue.GetString(), rootPath)
+                                      .value_or(localizeLocalURL(tileValue.GetString(), rootPath)
+                                                    .value_or(localizeHttpURL(tileValue.GetString(), rootPath)
+                                                                  .value_or(tileValue.GetString()))));
             tileValue.Set<std::string>(path, document.GetAllocator());
         }
     }
 
     if (root.HasMember("data") && root["data"].IsString()) {
         mbgl::JSValue& dataValue = root["data"];
-        const std::string path = prependFileScheme(localizeLocalURL(dataValue.GetString(), rootPath)
-            .value_or(dataValue.GetString()));
+        const std::string path =
+            prependFileScheme(localizeLocalURL(dataValue.GetString(), rootPath).value_or(dataValue.GetString()));
         dataValue.Set<std::string>(path, document.GetAllocator());
     }
 }
@@ -852,17 +862,17 @@ void localizeStyleURLs(mbgl::JSValue& root, mbgl::JSDocument& document, const st
 
     if (root.HasMember("glyphs")) {
         mbgl::JSValue& glyphsValue = root["glyphs"];
-        const std::string path = prependFileScheme(localizeMapboxFontsURL(glyphsValue.GetString(), rootPath)
-            .value_or(localizeLocalURL(glyphsValue.GetString(),rootPath, true)
-                .value_or(glyphsValue.GetString())));
+        const std::string path = prependFileScheme(
+            localizeMapboxFontsURL(glyphsValue.GetString(), rootPath)
+                .value_or(localizeLocalURL(glyphsValue.GetString(), rootPath, true).value_or(glyphsValue.GetString())));
         glyphsValue.Set<std::string>(path, document.GetAllocator());
     }
 
     if (root.HasMember("sprite")) {
         mbgl::JSValue& spriteValue = root["sprite"];
-        const std::string path = prependFileScheme(localizeMapboxSpriteURL(spriteValue.GetString(), rootPath)
-            .value_or(localizeLocalURL(spriteValue.GetString(), rootPath)
-                .value_or(spriteValue.GetString())));
+        const std::string path = prependFileScheme(
+            localizeMapboxSpriteURL(spriteValue.GetString(), rootPath)
+                .value_or(localizeLocalURL(spriteValue.GetString(), rootPath).value_or(spriteValue.GetString())));
         spriteValue.Set<std::string>(path, document.GetAllocator());
     }
 }

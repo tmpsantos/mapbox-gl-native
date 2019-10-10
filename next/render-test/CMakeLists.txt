@@ -47,6 +47,7 @@ target_link_libraries(
         mbgl-core
         mbgl-vendor-boost
 )
+
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
     set_target_properties(render-test PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
 endif()
@@ -54,6 +55,7 @@ endif()
 set_property(TARGET render-test PROPERTY FOLDER Core)
 
 string(RANDOM LENGTH 5 ALPHABET 0123456789 MBGL_RENDER_TEST_SEED)
+
 
 add_test(
     NAME mbgl-render-test
@@ -80,3 +82,4 @@ add_test(
 
 
 # add_test(NAME mbgl-query-test COMMAND mbgl-render-test query-tests WORKING_DIRECTORY ${MBGL_ROOT})
+

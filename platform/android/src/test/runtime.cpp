@@ -31,7 +31,6 @@ bool initRuntime(int argc, char *argv[]) {
     assert(createJavaVMFn != nullptr);
 
     std::string classPath = kClassPath + kDefaultDex;
-    printf("ok.......");
     for (int i = 0; i < argc; ++i) {
         const std::string arg{argv[i]};
         if (arg.compare(0, kClassPathCommand.length(), kClassPathCommand) == 0) {
