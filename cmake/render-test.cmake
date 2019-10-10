@@ -24,7 +24,9 @@ target_link_libraries(mbgl-render-test PRIVATE
     Mapbox::Base::Extras::rapidjson
 )
 
-mbgl_platform_test()
+mbgl_platform_render_test()
+
+create_source_groups(mbgl-render-test)
 
 set_target_properties(mbgl-render-test PROPERTIES FOLDER "Executables")
 

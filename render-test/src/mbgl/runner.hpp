@@ -10,14 +10,11 @@ struct TestMetadata;
 class TestRunner {
 public:
     TestRunner() = default;
+    explicit TestRunner(const std::string& rootPath_);
 
     bool run(TestMetadata&);
     void reset();
-
-    /// Returns path of the render tests root directory.
-    static const std::string& getBasePath();
-    /// Returns path of mapbox-gl-native expectations directory.
-    static const std::vector<std::string>& getPlatformExpectationsPaths();
+    const std::string& getRootPath() const;
 
 private:
     bool runOperations(const std::string& key, TestMetadata&);
@@ -33,4 +30,5 @@ private:
         mbgl::Map map;
     };
     std::unordered_map<std::string, std::unique_ptr<Impl>> maps;
+    std::string rootPath{TEST_RUNNER_ROOT_PATH};
 };

@@ -1,7 +1,6 @@
 
 add_library(
-    mbgl-render-test STATIC EXCLUDE_FROM_ALL
-    ${MBGL_ROOT}/render-test/src/mbgl/render_test_runner.cpp
+    render-test SHARED EXCLUDE_FROM_ALL
     ${MBGL_ROOT}/render-test/filesystem.hpp
     ${MBGL_ROOT}/render-test/src/test-runner/allocation_index.cpp
     ${MBGL_ROOT}/render-test/src/test-runner/allocation_index.hpp
@@ -18,13 +17,13 @@ add_library(
 )
 
 target_compile_definitions(
-    mbgl-render-test
+    render-test
     PRIVATE TEST_RUNNER_ROOT_PATH="${MBGL_ROOT}"
 )
 
 # FIXME: Should not use core private interface
 target_include_directories(
-    mbgl-render-test
+    render-test
     PRIVATE 
         ${MBGL_ROOT}/src 
         ${MBGL_ROOT}/platform/default/include
@@ -33,14 +32,14 @@ target_include_directories(
 )
 
 target_include_directories(
-    mbgl-render-test
+    render-test
     PUBLIC ${MBGL_ROOT}/render-test/include ${MBGL_ROOT}/include
 )
 
 include(${PROJECT_SOURCE_DIR}/vendor/boost.cmake)
 
 target_link_libraries(
-    mbgl-render-test
+    render-test
     PRIVATE
         Mapbox::Base::Extras::args
         Mapbox::Base::Extras::filesystem
@@ -49,10 +48,10 @@ target_link_libraries(
         mbgl-vendor-boost
 )
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
-    set_target_properties(mbgl-render-test PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
+    set_target_properties(render-test PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
 endif()
 
-set_property(TARGET mbgl-render-test PROPERTY FOLDER Core)
+set_property(TARGET render-test PROPERTY FOLDER Core)
 
 string(RANDOM LENGTH 5 ALPHABET 0123456789 MBGL_RENDER_TEST_SEED)
 

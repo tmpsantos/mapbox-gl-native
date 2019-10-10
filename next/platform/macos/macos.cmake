@@ -188,7 +188,7 @@ add_executable(
 
 target_link_libraries(
     mbgl-render-test-runner
-    PRIVATE mbgl-render-test
+    PRIVATE render-test
 )
 
 set_property(TARGET mbgl-benchmark-runner PROPERTY FOLDER Executables)

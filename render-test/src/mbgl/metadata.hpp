@@ -65,7 +65,7 @@ struct TestMetadata {
 
     mbgl::Size size{ 512u, 512u };
     float pixelRatio = 1.0f;
-    double allowed = 0.00015; // diff
+    double allowed = 0.00095; // diff
     std::string description;
     mbgl::MapMode mapMode = mbgl::MapMode::Static;
     mbgl::MapDebugOptions debug = mbgl::MapDebugOptions::NoDebug;
