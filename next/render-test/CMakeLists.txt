@@ -1,6 +1,6 @@
 
 add_library(
-    render-test SHARED EXCLUDE_FROM_ALL
+    mbgl-render-test SHARED EXCLUDE_FROM_ALL
     ${MBGL_ROOT}/render-test/src/mbgl/filesystem.hpp
     ${MBGL_ROOT}/render-test/src/mbgl/allocation_index.cpp
     ${MBGL_ROOT}/render-test/src/mbgl/allocation_index.hpp
@@ -15,13 +15,13 @@ add_library(
 )
 
 target_compile_definitions(
-    render-test
+    mbgl-render-test
     PRIVATE TEST_RUNNER_ROOT_PATH="${MBGL_ROOT}"
 )
 
 # FIXME: Should not use core private interface
 target_include_directories(
-    render-test
+    mbgl-render-test
     PRIVATE 
         ${MBGL_ROOT}/src 
         ${MBGL_ROOT}/platform/default/include
@@ -30,14 +30,14 @@ target_include_directories(
 )
 
 target_include_directories(
-    render-test
+    mbgl-render-test
     PUBLIC ${MBGL_ROOT}/render-test/include ${MBGL_ROOT}/include
 )
 
 include(${PROJECT_SOURCE_DIR}/vendor/boost.cmake)
 
 target_link_libraries(
-    render-test
+    mbgl-render-test
     PRIVATE
         Mapbox::Base::Extras::args
         Mapbox::Base::Extras::filesystem
@@ -47,37 +47,10 @@ target_link_libraries(
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Android)
-    set_target_properties(render-test PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
+    set_target_properties( mbgl-render-test PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
 endif()
 
-set_property(TARGET render-test PROPERTY FOLDER Core)
+set_property(TARGET mbgl-render-test PROPERTY FOLDER Core)
 
 string(RANDOM LENGTH 5 ALPHABET 0123456789 MBGL_RENDER_TEST_SEED)
-
-
-add_test(
-    NAME mbgl-render-test
-    COMMAND
-        mbgl-render-test
-        render-tests
-        --recycle-map
-        --shuffle
-        --seed=${MBGL_RENDER_TEST_SEED}
-    WORKING_DIRECTORY ${MBGL_ROOT}
-)
-
-add_test(
-    NAME mbgl-render-test-probes
-    COMMAND
-        mbgl-render-test
-        render-tests
-        --recycle-map
-        --shuffle
-        --seed=${MBGL_RENDER_TEST_SEED}
-        --rootPath=render-test
-    WORKING_DIRECTORY ${MBGL_ROOT}
-)
-
-
-# add_test(NAME mbgl-query-test COMMAND mbgl-render-test query-tests WORKING_DIRECTORY ${MBGL_ROOT})
 

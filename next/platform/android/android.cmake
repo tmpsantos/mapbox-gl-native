@@ -274,13 +274,13 @@ target_link_libraries(
 )
 
 add_executable(
-    mbgl-test-runner
+    mbgl-render-test
     ${MBGL_ROOT}/platform/android/src/test/runtime.cpp ${MBGL_ROOT}/platform/android/src/test/runtime.hpp
     ${MBGL_ROOT}/platform/android/src/test/test_runner.cpp
 )
 
 target_link_libraries(
-    mbgl-test-runner
+    mbgl-render-test
     PRIVATE Mapbox::Base::jni.hpp mapbox-gl mbgl-test
 )
 
@@ -312,7 +312,7 @@ target_link_libraries(
 set_target_properties(example-custom-layer PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
 set_target_properties(mapbox-gl PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
 set_target_properties(mbgl-benchmark-runner PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
-set_target_properties(mbgl-test-runner PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
+set_target_properties(mbgl-render-test PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
 set_target_properties(mbgl-render-test PROPERTIES LINK_FLAGS_RELEASE "-fuse-ld=gold -O2 -flto -Wl,--icf=safe")
 
 target_compile_options(example-custom-layer PRIVATE $<$<CONFIG:Release>:-Qunused-arguments -flto>)
