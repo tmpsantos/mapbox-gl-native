@@ -339,11 +339,11 @@ std::vector<std::string> readExpectedImageEntries(const mbgl::filesystem::path& 
     return readExpectedEntries(regex, base);
 }
 
-<<<<<<< HEAD:render-test/src/test-runner/parser.cpp
 std::vector<std::string> readExpectedJSONEntries(const mbgl::filesystem::path& base) {
     static const std::regex regex(".*expected.*.json");
     return readExpectedEntries(regex, base);
-=======
+}
+
 const std::string& getBasePath(const std::string& rootPath) {
     const static std::string result = std::string(rootPath).append("/mapbox-gl-js/test/integration");
     return result;
@@ -353,7 +353,6 @@ const std::vector<std::string>& getPlatformExpectationsPaths(const std::string& 
     // TODO: Populate from command line.
     const static std::vector<std::string> result{std::string(rootPath).append("/render-test/expected")};
     return result;
->>>>>>> [core] make render test runner run on android:render-test/src/mbgl/parser.cpp
 }
 
 ArgumentsTuple parseArguments(int argc, char** argv) {
