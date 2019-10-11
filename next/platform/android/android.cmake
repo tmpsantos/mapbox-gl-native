@@ -297,8 +297,7 @@ target_link_libraries(
 
 add_executable(
     mbgl-render-test-runner
-    ${MBGL_ROOT}/platform/android/src/test/render_test_runner.cpp 
-    ${MBGL_ROOT}/platform/android/src/test/runtime.cpp
+    ${MBGL_ROOT}/platform/android/src/test/render_test_runner.cpp ${MBGL_ROOT}/platform/android/src/test/runtime.cpp
     ${MBGL_ROOT}/platform/android/src/test/runtime.hpp
 )
 

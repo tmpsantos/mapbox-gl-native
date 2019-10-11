@@ -925,7 +925,6 @@ add_library(
     Mapbox::Map ALIAS mbgl-core
 )
 
-
 if(MBGL_WITH_CORE_ONLY)
     return()
 elseif(MBGL_WITH_QT)
