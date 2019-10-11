@@ -1,8 +1,16 @@
 add_executable(mbgl-render-test
-    render-test/src/mbgl/allocation_index.cpp
     render-test/src/mbgl/render_test_runner.cpp
-    render-test/src/mbgl/parser.cpp
-    render-test/src/mbgl/runner.cpp
+    render-test/src/test-runner/filesystem.hpp
+    render-test/src/test-runner/allocation_index.cpp
+    render-test/src/test-runner/allocation_index.hpp
+    render-test/src/test-runner/filesystem.hpp
+    render-test/src/test-runner/metadata.hpp
+    render-test/src/test-runner/parser.cpp
+    render-test/src/test-runner/parser.hpp
+    render-test/src/test-runner/runner.cpp
+    render-test/src/test-runner/runner.hpp
+    render-test/src/test-runner/test_runner.hpp
+    render-test/src/test-runner/test_runner.cpp
     expression-test/test_runner_common.cpp
     expression-test/test_runner_common.hpp
 )
@@ -10,8 +18,13 @@ add_executable(mbgl-render-test
 target_include_directories(mbgl-render-test
     PRIVATE src
     PRIVATE platform/default/include
-    PRIVATE render-test/include
     PRIVATE render-test/src
+)
+
+target_include_directories(
+    mbgl-render-test
+    PUBLIC render-test/include 
+    PUBLIC include
 )
 
 target_link_libraries(mbgl-render-test PRIVATE

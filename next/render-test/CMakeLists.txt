@@ -1,15 +1,18 @@
 
 add_library(
     mbgl-render-test SHARED EXCLUDE_FROM_ALL
-    ${MBGL_ROOT}/render-test/src/mbgl/filesystem.hpp
-    ${MBGL_ROOT}/render-test/src/mbgl/allocation_index.cpp
-    ${MBGL_ROOT}/render-test/src/mbgl/allocation_index.hpp
-    ${MBGL_ROOT}/render-test/src/mbgl/filesystem.hpp
-    ${MBGL_ROOT}/render-test/src/mbgl/metadata.hpp
-    ${MBGL_ROOT}/render-test/src/mbgl/parser.cpp
-    ${MBGL_ROOT}/render-test/src/mbgl/parser.hpp
-    ${MBGL_ROOT}/render-test/src/mbgl/runner.cpp
-    ${MBGL_ROOT}/render-test/src/mbgl/runner.hpp
+    ${MBGL_ROOT}/render-test/src/mbgl/render_test_runner.cpp
+    ${MBGL_ROOT}/render-test/src/test-runner/filesystem.hpp
+    ${MBGL_ROOT}/render-test/src/test-runner/allocation_index.cpp
+    ${MBGL_ROOT}/render-test/src/test-runner/allocation_index.hpp
+    ${MBGL_ROOT}/render-test/src/test-runner/filesystem.hpp
+    ${MBGL_ROOT}/render-test/src/test-runner/metadata.hpp
+    ${MBGL_ROOT}/render-test/src/test-runner/parser.cpp
+    ${MBGL_ROOT}/render-test/src/test-runner/parser.hpp
+    ${MBGL_ROOT}/render-test/src/test-runner/runner.cpp
+    ${MBGL_ROOT}/render-test/src/test-runner/runner.hpp
+    ${MBGL_ROOT}/render-test/src/test-runner/test_runner.hpp
+    ${MBGL_ROOT}/render-test/src/test-runner/test_runner.cpp
     ${MBGL_ROOT}/expression-test/test_runner_common.cpp
     ${MBGL_ROOT}/expression-test/test_runner_common.hpp
 )
