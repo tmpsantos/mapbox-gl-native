@@ -2,8 +2,8 @@
 
 #include <mbgl/util/io.hpp>
 #include <mbgl/util/run_loop.hpp>
+#include <mbgl/render_test.hpp>
 
-#include "test_runner.hpp"
 #include "metadata.hpp"
 #include "parser.hpp"
 #include "runner.hpp"
@@ -39,7 +39,7 @@ void operator delete(void* ptr, size_t) noexcept {
 
 namespace mbgl {
 
-int runTests(int argc, char* argv[]) {
+int runRenderTests(int argc, char* argv[]) {
     bool recycleMap;
     bool shuffle;
     uint32_t seed;
