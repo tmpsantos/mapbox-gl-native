@@ -198,7 +198,7 @@ set_property(TARGET mbgl-render-test-runner PROPERTY FOLDER Executables)
 add_test(NAME mbgl-benchmark-runner COMMAND mbgl-benchmark-runner WORKING_DIRECTORY ${MBGL_ROOT})
 add_test(NAME mbgl-test-runner COMMAND mbgl-test-runner WORKING_DIRECTORY ${MBGL_ROOT})
 add_test(
-    NAME mbgl-render-test
+    NAME mbgl-render-test-runner
     COMMAND
         mbgl-render-test-runner
         render-tests
