@@ -295,15 +295,23 @@ target_link_libraries(
     PRIVATE Mapbox::Base::jni.hpp mapbox-gl mbgl-benchmark
 )
 
-add_executable(
+add_library(
+    mbgl-render-test-runner SHARED
+    ${MBGL_ROOT}/platform/android/src/test/render_test_runner.cpp ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
+)
+
+target_include_directories(
     mbgl-render-test-runner
-    ${MBGL_ROOT}/platform/android/src/test/render_test_runner.cpp ${MBGL_ROOT}/platform/android/src/test/runtime.cpp
-    ${MBGL_ROOT}/platform/android/src/test/runtime.hpp
+    PRIVATE ${ANDROID_NDK}/sources/android/native_app_glue
 )
 
 target_link_libraries(
     mbgl-render-test-runner
-    PRIVATE Mapbox::Base::jni.hpp mapbox-gl mbgl-render-test
+    PRIVATE
+        Mapbox::Base::jni.hpp
+        mbgl-render-test
+        android
+        log
 )
 
 # Android has no concept of MinSizeRel on android.toolchain.cmake and provides configurations tuned for binary size. We can push it a bit
@@ -319,4 +327,5 @@ target_compile_options(mapbox-gl PRIVATE $<$<CONFIG:Release>:-Qunused-arguments 
 target_compile_options(mbgl-core PRIVATE $<$<CONFIG:Release>:-Qunused-arguments -flto>)
 target_compile_options(mbgl-vendor-icu PRIVATE $<$<CONFIG:Release>:-Qunused-arguments -flto>)
 target_compile_options(mbgl-vendor-sqlite PRIVATE $<$<CONFIG:Release>:-Qunused-arguments -flto>)
-include(${MBGL_ROOT}/TestRunner/test-runner.cmake)
+
+# include(${MBGL_ROOT}/TestRunner/test-runner.cmake)
