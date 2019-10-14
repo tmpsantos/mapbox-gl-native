@@ -198,14 +198,26 @@ set_property(TARGET mbgl-render-test-runner PROPERTY FOLDER Executables)
 add_test(NAME mbgl-benchmark-runner COMMAND mbgl-benchmark-runner WORKING_DIRECTORY ${MBGL_ROOT})
 add_test(NAME mbgl-test-runner COMMAND mbgl-test-runner WORKING_DIRECTORY ${MBGL_ROOT})
 add_test(
-    NAME mbgl-render-test-runner
+    NAME mbgl-render-test
     COMMAND
         mbgl-render-test-runner
         render-tests
         --recycle-map
         --shuffle
-        --seed
-        ${MBGL_RENDER_TEST_SEED}
+        --seed=${MBGL_RENDER_TEST_SEED}
     WORKING_DIRECTORY ${MBGL_ROOT}
 )
-add_test(NAME mbgl-query-test COMMAND mbgl-render-test query-tests WORKING_DIRECTORY ${MBGL_ROOT})
+
+add_test(
+    NAME mbgl-render-test-probes
+    COMMAND
+        mbgl-render-test-runner
+        render-tests
+        --recycle-map
+        --shuffle
+        --seed=${MBGL_RENDER_TEST_SEED}
+        --rootPath=render-test
+    WORKING_DIRECTORY ${MBGL_ROOT}
+)
+
+add_test(NAME mbgl-query-test COMMAND mbgl-render-test-runner query-tests WORKING_DIRECTORY ${MBGL_ROOT})

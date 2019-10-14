@@ -319,3 +319,4 @@ target_compile_options(mapbox-gl PRIVATE $<$<CONFIG:Release>:-Qunused-arguments 
 target_compile_options(mbgl-core PRIVATE $<$<CONFIG:Release>:-Qunused-arguments -flto>)
 target_compile_options(mbgl-vendor-icu PRIVATE $<$<CONFIG:Release>:-Qunused-arguments -flto>)
 target_compile_options(mbgl-vendor-sqlite PRIVATE $<$<CONFIG:Release>:-Qunused-arguments -flto>)
+include(${MBGL_ROOT}/TestRunner/test-runner.cmake)
