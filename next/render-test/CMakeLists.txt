@@ -1,5 +1,5 @@
 add_library(
-    mbgl-render-test SHARED EXCLUDE_FROM_ALL
+    mbgl-render-test STATIC EXCLUDE_FROM_ALL
     ${MBGL_ROOT}/expression-test/test_runner_common.cpp
     ${MBGL_ROOT}/expression-test/test_runner_common.hpp
     ${MBGL_ROOT}/render-test/allocation_index.cpp

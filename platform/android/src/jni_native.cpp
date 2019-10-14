@@ -56,6 +56,15 @@
 #include "logger.hpp"
 #include "text/local_glyph_rasterizer_jni.hpp"
 
+#include <android/log.h>
+
+#ifndef NDEBUG
+#  define LOGV(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "threaded_app", __VA_ARGS__))
+#else
+#  define LOGV(...)  ((void)0)
+#endif
+
+
 namespace mbgl {
 namespace android {
 
@@ -64,17 +73,23 @@ void RegisterNativeHTTPRequest(JNIEnv&);
 void registerNatives(JavaVM *vm) {
     theJVM = vm;
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
+
     jni::JNIEnv& env = jni::GetEnv(*vm, jni::jni_version_1_6);
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     // For the DefaultFileSource
     static mbgl::util::RunLoop mainRunLoop;
     FileSource::registerNative(env);
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     // Basic types
     java::registerNatives(env);
     java::util::registerNative(env);
     PointF::registerNative(env);
     RectF::registerNative(env);
+
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
 
     // GeoJSON
     geojson::Feature::registerNative(env);
@@ -157,9 +172,11 @@ void registerNatives(JavaVM *vm) {
     StringUtils::registerNative(env);
     NumberFormat::registerNative(env);
 
+    LOGV("AAAAAAAAA %d\n", __LINE__);
     // Logger
     Logger::registerNative(env);
 
+    LOGV("AAAAAAAAA %d\n", __LINE__);
     // AssetManager
     Mapbox::registerNative(env);
 }

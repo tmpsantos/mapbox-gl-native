@@ -13,6 +13,14 @@
 
 #include "asset_manager_file_source.hpp"
 
+#include <android/log.h>
+
+#ifndef NDEBUG
+#  define LOGV(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "threaded_app", __VA_ARGS__))
+#else
+#  define LOGV(...)  ((void)0)
+#endif
+
 namespace mbgl {
 
 std::shared_ptr<FileSource> FileSource::createPlatformFileSource(const ResourceOptions& options) {
@@ -167,10 +175,15 @@ void FileSource::registerNative(jni::JNIEnv& env) {
     // Ensure the classes are cached. If they're requested for the
     // first time on a background thread, Android's class loader heuristics will fail.
     // https://developer.android.com/training/articles/perf-jni#faq_FindClass
+
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     jni::Class<ResourceTransformCallback>::Singleton(env);
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     jni::Class<ResourcesCachePathChangeCallback>::Singleton(env);
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     static auto& javaClass = jni::Class<FileSource>::Singleton(env);
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
 
     #define METHOD(MethodPtr, name) jni::MakeNativePeerMethod<decltype(MethodPtr), (MethodPtr)>(name)
 
@@ -189,6 +202,7 @@ void FileSource::registerNative(jni::JNIEnv& env) {
                                         METHOD(&FileSource::resume, "activate"),
                                         METHOD(&FileSource::pause, "deactivate"),
                                         METHOD(&FileSource::isResumed, "isActivated"));
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
 }
 
 

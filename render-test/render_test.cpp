@@ -10,6 +10,14 @@
 
 #include <random>
 
+#include <android/log.h>
+
+#ifndef NDEBUG
+#  define LOGV(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "threaded_app", __VA_ARGS__))
+#else
+#  define LOGV(...)  ((void)0)
+#endif
+
 #define ANSI_COLOR_RED "\x1b[31m"
 #define ANSI_COLOR_GREEN "\x1b[32m"
 #define ANSI_COLOR_YELLOW "\x1b[33m"
@@ -46,7 +54,9 @@ int runRenderTests(int argc, char* argv[]) {
     std::string testRootPath;
     std::vector<TestPaths> testPaths;
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     std::tie(recycleMap, shuffle, seed, testRootPath, testPaths) = parseArguments(argc, argv);
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     const std::string::size_type rootLength = testRootPath.length();
 
     const auto ignores = parseIgnores(testRootPath);
@@ -59,14 +69,17 @@ int runRenderTests(int argc, char* argv[]) {
         std::shuffle(testPaths.begin(), testPaths.end(), shuffler);
     }
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     mbgl::util::RunLoop runLoop;
     TestRunner runner(testRootPath);
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     std::vector<TestMetadata> metadatas;
     metadatas.reserve(testPaths.size());
 
     TestStatistics stats;
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     for (auto& testPath : testPaths) {
         TestMetadata metadata = parseTestMetadata(testPath, testRootPath);
 

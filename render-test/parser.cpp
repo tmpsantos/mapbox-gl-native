@@ -25,6 +25,14 @@
 
 #include <sstream>
 
+#include <android/log.h>
+
+#ifndef NDEBUG
+#  define LOGV(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "threaded_app", __VA_ARGS__))
+#else
+#  define LOGV(...)  ((void)0)
+#endif
+
 namespace {
 
 const char* resultsStyle = R"HTML(
@@ -356,6 +364,8 @@ const std::vector<std::string>& getPlatformExpectationsPaths(const std::string& 
 }
 
 ArgumentsTuple parseArguments(int argc, char** argv) {
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
+    LOGV("%s:%d %d %s\n", __FUNCTION__, __LINE__, argc, argv[0]);
     args::ArgumentParser argumentParser("Mapbox GL Test Runner");
 
     args::HelpFlag helpFlag(argumentParser, "help", "Display this help menu", { 'h', "help" });
@@ -371,8 +381,11 @@ ArgumentsTuple parseArguments(int argc, char** argv) {
                                                { 'f', "filter" });
     args::PositionalList<std::string> testNameValues(argumentParser, "URL", "Test name(s)");
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     try {
+        LOGV("%s:%d\n", __FUNCTION__, __LINE__);
         argumentParser.ParseCLI(argc, argv);
+        LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     } catch (const args::Help&) {
         std::ostringstream stream;
         stream << argumentParser;
@@ -395,6 +408,7 @@ ArgumentsTuple parseArguments(int argc, char** argv) {
         exit(3);
     }
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     mbgl::filesystem::path rootPath{testRootPathValue ? args::get(testRootPathValue)
                                                       : std::string(TEST_RUNNER_ROOT_PATH)};
     if (!mbgl::filesystem::exists(rootPath)) {
@@ -402,12 +416,14 @@ ArgumentsTuple parseArguments(int argc, char** argv) {
         exit(4);
     }
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     mbgl::filesystem::path basePath{getBasePath(rootPath.string())};
     std::vector<mbgl::filesystem::path> paths;
     for (const auto& id : args::get(testNameValues)) {
         paths.emplace_back(basePath.string() + "/" + id);
     }
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     if (paths.empty()) {
         paths.emplace_back(basePath);
     }
@@ -416,10 +432,14 @@ ArgumentsTuple parseArguments(int argc, char** argv) {
     std::vector<TestPaths> testPaths;
     testPaths.reserve(paths.size());
     for (const auto& path : paths) {
+        LOGV("%s:%d\n", __FUNCTION__, __LINE__);
         if (!mbgl::filesystem::exists(path)) {
+            LOGV("%s:%d\n", __FUNCTION__, __LINE__);
             mbgl::Log::Warning(mbgl::Event::General, "Provided test folder '%s' does not exist.", path.string().c_str());
+            LOGV("%s:%d\n", __FUNCTION__, __LINE__);
             continue;
         }
+        LOGV("%s:%d\n", __FUNCTION__, __LINE__);
         for (auto& testPath : mbgl::filesystem::recursive_directory_iterator(path)) {
             // Skip paths that fail regexp match.
             if (testFilterValue && !std::regex_match(testPath.path().string(), args::get(testFilterValue))) {
@@ -432,6 +452,7 @@ ArgumentsTuple parseArguments(int argc, char** argv) {
         }
     }
 
+    LOGV("%s:%d\n", __FUNCTION__, __LINE__);
     return ArgumentsTuple{recycleMapFlag ? args::get(recycleMapFlag) : false,
                           shuffleFlag ? args::get(shuffleFlag) : false,
                           seedValue ? args::get(seedValue) : 1u,

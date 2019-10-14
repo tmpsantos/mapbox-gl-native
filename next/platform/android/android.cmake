@@ -302,7 +302,7 @@ add_library(
 
 target_include_directories(
     mbgl-render-test-runner
-    PRIVATE ${ANDROID_NDK}/sources/android/native_app_glue
+    PRIVATE ${ANDROID_NDK}/sources/android/native_app_glue ${MBGL_ROOT}/platform/android/src
 )
 
 target_link_libraries(
@@ -312,6 +312,8 @@ target_link_libraries(
         mbgl-render-test
         android
         log
+        Mapbox::Base::geometry.hpp
+        Mapbox::Base::variant
 )
 
 # Android has no concept of MinSizeRel on android.toolchain.cmake and provides configurations tuned for binary size. We can push it a bit
